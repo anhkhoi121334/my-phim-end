@@ -1,8 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700;900&display=swap');
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 13, 17, 23;
+  --background-end-rgb: 20, 24, 30;
+  --foreground: #f8fafc;
+  --bg-main: #0d1117;
+  --bg-secondary: #161b22;
+  --color-primary: #0ea5e9;
+  --color-primary-hover: #0284c7;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --card-bg: #1e293b;
+  --card-hover: #334155;
 }
 
 @theme inline {
@@ -12,15 +26,310 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+  font-family: 'Inter', sans-serif;
+  padding-top: 0;
+}
+
+/* Style cho Header */
+header {
+  background-color: rgba(13, 17, 23, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  height: 70px;
+}
+
+.btn-primary {
+  @apply bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg transition-colors;
+}
+
+.card-movie {
+  @apply bg-[#1e293b] rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02];
+}
+
+.movie-title {
+  @apply font-bold line-clamp-2 transition-colors hover:text-sky-400;
+}
+
+.nav-link {
+  @apply hover:text-sky-400 transition-colors px-3 py-2;
+}
+
+.nav-link-active {
+  @apply text-sky-400 font-medium;
+}
+
+.container-custom {
+  @apply container mx-auto px-4 max-w-7xl;
+}
+
+.section-title {
+  @apply text-2xl font-bold text-white mb-6 flex items-center;
+}
+
+.section-title::before {
+  content: "";
+  @apply w-1 h-6 bg-sky-500 rounded-full mr-2 inline-block;
+}
+
+.quality-badge {
+  @apply absolute top-2 right-2 bg-sky-500 text-white text-xs px-2 py-1 rounded-md font-medium;
+}
+
+.episode-badge {
+  @apply absolute bottom-0 left-0 right-0 bg-black/70 text-white text-sm px-2 py-1;
+}
+
+@layer components {
+  .movie-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6;
+  }
+  
+  .pagination-button {
+    @apply px-4 py-2 border border-slate-700 rounded-md text-slate-300 hover:bg-slate-700 hover:text-white transition-colors;
+  }
+  
+  .pagination-button-active {
+    @apply bg-sky-500 text-white border-sky-500 hover:bg-sky-600 hover:border-sky-600;
+  }
+  
+  .movie-info-item {
+    @apply flex items-start gap-2 text-sm;
+  }
+  
+  .movie-info-label {
+    @apply text-slate-400;
+  }
+  
+  .movie-info-value {
+    @apply text-white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Style cho thẻ phim */
+.movie-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1e293b;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.35s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Style cho nút play */
+.play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(14, 165, 233, 0.9);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.movie-card:hover .play-button {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.play-button:hover {
+  background-color: rgb(14, 165, 233);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+/* Thanh cuộn tùy chỉnh */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Banner hero */
+.hero-banner {
+  height: calc(90vh - 0px);
+  position: relative;
+  overflow: hidden;
+  margin-top: -10px; 
+  padding-top: 70px;  
+}
+
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to top, rgba(13, 17, 23, 0.95), transparent);
+  z-index: 10;
+}
+
+/* Style cho tiêu đề phim trong banner */
+.movie-title-wrapper {
+  position: relative;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.movie-title-line {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  font-size: 3rem;
+  text-transform: uppercase;
+  color: #f472b6; /* text-fuchsia-400 */
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.movie-title-second-line {
+  margin-top: -15px;
+}
+
+@media (max-width: 768px) {
+  .movie-title-line {
+    font-size: 4rem;
+  }
+  
+  .movie-title-second-line {
+    margin-top: -5px;
+  }
+}
+
+/* Điều hướng thumbnail */
+.thumbnail-nav {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.thumbnail-button {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.thumbnail-button.active {
+  transform: scale(1.15);
+  border-color: #0ea5e9;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+}
+
+.thumbnail-button:hover:not(.active) {
+  transform: scale(1.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Hiệu ứng cho chuyển đổi slide */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+.slide-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.slide-fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+/* Trang nội dung phim */
+.movie-content-page {
+  padding-top: 70px;
+}
+
+/* Nút hành động */
+.watch-button {
+  background: linear-gradient(to right, #0ea5e9, #38bdf8);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
+
+.watch-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
+}
+
+.details-button {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.details-button:hover {
+  background-color: rgba(51, 65, 85, 0.9);
+  transform: translateY(-2px);
+}
+
+/* Thẻ danh mục */
+.category-pill {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover {
+  background-color: rgba(14, 165, 233, 0.2);
+  color: #38bdf8;
+}
+
+/* Hiệu ứng thẻ kính */
+.glass-card {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
 }
