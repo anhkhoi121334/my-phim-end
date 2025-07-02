@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState, useRef } from 'react';
+import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import movieApi, { Movie, Episode, ServerData } from '@/services/api/movieApi';
+import Hls from 'hls.js';
 
 interface WatchProps {
   params: {
@@ -15,12 +16,65 @@ export default function Watch({ params }: WatchProps) {
   const searchParams = useSearchParams();
   const episodeSlug = searchParams.get('tap') || 'tap-01';
   
+  // Sử dụng useParams hook thay vì truy cập params trực tiếp
+  const routeParams = useParams();
+  const id = routeParams.id as string;
+  
   const [movie, setMovie] = useState<Movie | null>(null);
   const [episodes, setEpisodes] = useState<ServerData[]>([]);
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const [currentServer, setCurrentServer] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [iframeError, setIframeError] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // HLS support for m3u8 streams
+  useEffect(() => {
+    if (currentEpisode && videoRef.current) {
+      const embed = currentEpisode.link_embed || '';
+      let m3u8 = currentEpisode.link_m3u8 || '';
+      if (embed.includes('player.phimapi.com')) {
+        try {
+          m3u8 = new URL(embed).searchParams.get('url') || m3u8;
+        } catch {}
+      }
+      if (m3u8) {
+        const video = videoRef.current;
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(m3u8);
+          hls.attachMedia(video);
+          return () => { hls.destroy(); };
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = m3u8;
+        }
+      }
+    }
+  }, [currentEpisode]);
+  
+  // Xử lý lỗi iframe
+  useEffect(() => {
+    const handleIframeError = () => {
+      console.log("Iframe failed to load properly");
+      setIframeError(true);
+    };
+
+    // Reset trạng thái lỗi khi thay đổi episode
+    if (currentEpisode) {
+      setIframeError(false);
+    }
+
+    const iframe = iframeRef.current;
+    if (iframe) {
+      // Lắng nghe sự kiện error
+      iframe.addEventListener('error', handleIframeError);
+      return () => {
+        iframe.removeEventListener('error', handleIframeError);
+      };
+    }
+  }, [currentEpisode]);
   
   useEffect(() => {
     const fetchMovie = async () => {
@@ -28,7 +82,7 @@ export default function Watch({ params }: WatchProps) {
         setIsLoading(true);
         setError(null);
         
-        const slug = params.id;
+        const slug = id;
         const data = await movieApi.getMovieDetails(slug);
         
         setMovie(data.movie);
@@ -53,7 +107,7 @@ export default function Watch({ params }: WatchProps) {
     };
     
     fetchMovie();
-  }, [params, episodeSlug]);
+  }, [id, episodeSlug]);
   
   // Hàm chọn server
   const handleServerChange = (serverName: string) => {
@@ -71,6 +125,30 @@ export default function Watch({ params }: WatchProps) {
   const handleEpisodeChange = (episode: Episode) => {
     setCurrentEpisode(episode);
   };
+  
+  // Lọc và xử lý link embed và m3u8
+  const embedUrl = currentEpisode?.link_embed || '';
+  // Tách m3u8 từ embed nếu là wrapper player.phimapi.com
+  let m3u8Url = currentEpisode?.link_m3u8 || '';
+  if (embedUrl.includes('player.phimapi.com')) {
+    try {
+      const parsed = new URL(embedUrl).searchParams.get('url') || '';
+      m3u8Url = parsed;
+    } catch {}
+  }
+  
+  // Quyết định cho phép iframe
+  let allowIframe = false;
+  if (embedUrl && !iframeError) {
+    try {
+      const hostname = new URL(embedUrl).hostname;
+      // Loại bỏ host không cho embed
+      const blocked = ['google.com','www.google.com','player.phimapi.com'];
+      if (!blocked.includes(hostname)) {
+        allowIframe = true;
+      }
+    } catch {}
+  }
   
   if (isLoading) {
     return (
@@ -128,12 +206,48 @@ export default function Watch({ params }: WatchProps) {
       {/* Player */}
       <div className="w-full aspect-video bg-black rounded-lg mb-6 overflow-hidden">
         {currentEpisode ? (
-          <iframe
-            src={currentEpisode.link_embed}
-            className="w-full h-full"
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          ></iframe>
+          <div className="w-full h-full">
+            {allowIframe && embedUrl ? (
+              <iframe
+                ref={iframeRef}
+                src={embedUrl}
+                className="w-full h-full"
+                allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                referrerPolicy="no-referrer"
+                sandbox="allow-scripts allow-same-origin allow-forms"
+                onError={() => setIframeError(true)}
+                onLoad={() => setIframeError(false)}
+              />
+            ) : m3u8Url ? (
+              <video
+                ref={videoRef}
+                controls
+                autoPlay
+                className="w-full h-full"
+                src={m3u8Url}
+              >
+                Trình duyệt của bạn không hỗ trợ HTML5 video.
+              </video>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center text-gray-400">
+                  <p className="mb-4">Không thể hiển thị video này.</p>
+                  <p className="text-sm">Vui lòng chọn server hoặc tập phim khác.</p>
+                  {currentServer && embedUrl && (
+                    <a
+                      href={embedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                      Mở Link Trực Tiếp
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center text-gray-400">
@@ -176,7 +290,7 @@ export default function Watch({ params }: WatchProps) {
               ?.server_data.map((episode) => (
                 <Link
                   key={episode.slug}
-                  href={`/watch/${params.id}?tap=${episode.slug}`}
+                  href={`/watch/${id}?tap=${episode.slug}`}
                   className={`px-3 py-2 text-center rounded ${
                     currentEpisode?.slug === episode.slug
                       ? 'bg-blue-600 text-white'

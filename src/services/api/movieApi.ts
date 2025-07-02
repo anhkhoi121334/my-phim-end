@@ -137,17 +137,18 @@ export const fetchMoviesByGenre = async ({
 };
 
 /**
- * Lấy chi tiết phim theo ID
- * @param id ID của phim
+ * Lấy chi tiết phim theo slug (được gọi là ID trong route)
+ * @param slug Slug của phim
  * @returns Promise với chi tiết phim
  */
-export const fetchMovieById = async (id: string): Promise<Movie> => {
+export const fetchMovieById = async (slug: string): Promise<Movie> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/v1/api/phim/${id}`);
+    // API này thực chất nhận slug, không phải ID
+    const response = await axios.get(`${API_BASE_URL}/v1/api/phim/${slug}`);
     return response.data.data;
   } catch (error) {
-    console.error(`Error fetching movie with ID ${id}:`, error);
-    throw new Error(`Failed to fetch movie with ID ${id}`);
+    console.error(`Error fetching movie with slug ${slug}:`, error);
+    throw new Error(`Failed to fetch movie with slug ${slug}`);
   }
 };
 
@@ -158,11 +159,32 @@ export const fetchMovieById = async (id: string): Promise<Movie> => {
  */
 export const getMovieDetails = async (slug: string): Promise<MovieDetailResponse> => {
   try {
-    const response = await axios.get<MovieDetailResponse>(`${API_BASE_URL}/phim/${slug}`);
-    return response.data;
+    // Đúng định dạng API: https://phimapi.com/phim/${slug}
+    const url = `${API_BASE_URL}/phim/${slug}`;
+    console.log('Fetching movie details from:', url);
+    
+    const response = await axios.get(url);
+    
+    // Kiểm tra và xử lý dữ liệu
+    if (response.data && response.data.status) {
+      return {
+        status: true,
+        msg: response.data.msg || 'Success',
+        movie: response.data.movie || {},
+        episodes: response.data.episodes || []
+      };
+    }
+    
+    throw new Error('Invalid response format from movie details API');
   } catch (error) {
     console.error(`Error fetching movie details for ${slug}:`, error);
-    throw new Error(`Failed to fetch movie details for ${slug}`);
+    // Trả về dữ liệu rỗng nhưng đúng cấu trúc trong trường hợp lỗi
+    return {
+      status: false,
+      msg: `Failed to fetch movie details for ${slug}`,
+      movie: {} as Movie, 
+      episodes: []
+    };
   }
 };
 
@@ -209,26 +231,22 @@ export const getLatestMovies = async (
   pagination?: any;
 }> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}`);
-    
-    // Kiểm tra và xử lý dữ liệu từ API
-    if (response.data && response.data.items) {
-      return {
-        status: true,
-        items: response.data.items,
-        pagination: response.data.pagination
-      };
-    }
-    
-    throw new Error('Invalid response format');
+    // Use correct API endpoint - simpler approach with fallback
+    return await useFallbackLatestMovies(page, limit);
   } catch (error) {
     console.error('Error fetching latest movies:', error);
-    
-    // Fallback: Sử dụng API thể loại để lấy phim mới nhất
+    // Use fallback when an error occurs
+    return await useFallbackLatestMovies(page, limit);
+  }
+};
+
+// Helper function to get fallback movies
+const useFallbackLatestMovies = async (page: number, limit: number) => {
+  try {
     const response = await fetchMoviesByGenre({
-      genreSlug: 'hanh-dong', // Thể loại phổ biến để có nhiều phim
+      genreSlug: 'hanh-dong', // Popular genre
       page,
-      sortField: '_id', // Sắp xếp theo ID để có phim mới
+      sortField: '_id',
       sortType: 'desc',
       limit
     });
@@ -241,6 +259,18 @@ export const getLatestMovies = async (
         totalItemsPerPage: limit,
         currentPage: response.data.currentPage,
         totalPages: response.data.totalPages
+      }
+    };
+  } catch (fallbackError) {
+    console.error('Error with fallback movie fetch:', fallbackError);
+    return {
+      status: false,
+      items: [],
+      pagination: {
+        totalItems: 0,
+        totalItemsPerPage: limit,
+        currentPage: 1,
+        totalPages: 0
       }
     };
   }
@@ -261,21 +291,33 @@ export const getTrendingMovies = async (
   pagination?: any;
 }> => {
   try {
-    // Sử dụng API thể loại để lấy phim xu hướng
+    // Use correct approach with fallback directly
+    return await getFallbackTrendingMovies(page, limit);
+  } catch (error) {
+    console.error('Error fetching trending movies:', error);
+    // Use fallback when an error occurs
+    return await getFallbackTrendingMovies(page, limit);
+  }
+};
+
+// Helper function for trending movies fallback
+const getFallbackTrendingMovies = async (page: number, limit: number) => {
+  try {
+    // Use action genre as fallback for trending movies
     const response = await fetchMoviesByGenre({
-      genreSlug: 'hanh-dong', // Thể loại phổ biến để có nhiều phim
+      genreSlug: 'hanh-dong', // Popular genre
       page,
-      sortField: '_id', // Sắp xếp theo ID để có phim mới
+      sortField: '_id', 
       sortType: 'desc',
       limit
     });
     
-    // Thêm rating giả lập cho các phim
+    // Add simulated ratings for better UI experience
     const moviesWithRating = response.data.items.map(movie => ({
       ...movie,
       rating: {
-        vote_average: Math.random() * 3 + 7, // Random từ 7-10
-        vote_count: Math.floor(Math.random() * 1000) + 100 // Random từ 100-1100
+        vote_average: Math.random() * 3 + 7, // Random between 7-10
+        vote_count: Math.floor(Math.random() * 1000) + 100 // Random between 100-1100
       }
     }));
     
@@ -289,9 +331,18 @@ export const getTrendingMovies = async (
         totalPages: response.data.totalPages
       }
     };
-  } catch (error) {
-    console.error('Error fetching trending movies:', error);
-    throw new Error('Failed to fetch trending movies');
+  } catch (fallbackError) {
+    console.error('Error with fallback trending movies fetch:', fallbackError);
+    return {
+      status: false,
+      items: [],
+      pagination: {
+        totalItems: 0,
+        totalItemsPerPage: limit,
+        currentPage: 1,
+        totalPages: 0
+      }
+    };
   }
 };
 

@@ -24,6 +24,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             src={getImageUrl(movie.poster_url)}
             alt={movie.name}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
@@ -185,6 +186,7 @@ export default function Home() {
                 src={getImageUrl(featuredMovie.thumb_url || featuredMovie.poster_url)}
                 alt={featuredMovie.name}
                 fill
+                sizes="100vw"
                 className="object-cover"
                 style={{ transform: isSliding ? 'scale(1.1)' : 'scale(1)', transition: 'transform 700ms ease-in-out' }}
                 priority
@@ -230,12 +232,7 @@ export default function Home() {
                            featuredMovie.rating?.vote_average ? featuredMovie.rating.vote_average.toFixed(1) : "N/A"}
                         </span>
                       </div>
-                    </div>
-                    
-                    <p className="text-gray-300 text-lg mb-6 max-w-2xl line-clamp-2">
-                      {featuredMovie.content || "Đang cập nhật nội dung phim. Vui lòng quay lại sau."}
-                    </p>
-                    
+                    </div>                  
                     <div className="flex gap-4 mt-6">
                       <Link 
                         href={`/watch/${featuredMovie.slug}`} 

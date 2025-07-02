@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import movieApi, { Movie } from '@/services/api/movieApi';
+import { useParams } from 'next/navigation';
 
 interface MovieDetailProps {
   params: {
@@ -16,26 +17,33 @@ export default function MovieDetail({ params }: MovieDetailProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // Sử dụng useParams hook thay vì truy cập params trực tiếp
+  const routeParams = useParams();
+  const slug = routeParams.id as string; // Tham số URL là id nhưng thực tế là slug
+  
   useEffect(() => {
     const fetchMovieDetail = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        // Sử dụng params.id trực tiếp, không cần use()
-        const id = params.id;
-        
-        // Sử dụng fetchMovieById thay vì getMovieDetails
-        const data = await movieApi.fetchMovieById(id);
-        
-        // Đảm bảo rằng category và country luôn là mảng
+        // Sử dụng getMovieDetails thay vì fetchMovieById vì tham số là slug
+        const data = await movieApi.getMovieDetails(slug);
+        if (!data.status) {
+          // API trả về status=false, hiển thị thông báo từ API
+          setError(data.msg || 'Không tìm thấy thông tin phim.');
+          setIsLoading(false);
+          return;
+        }
+        // API status=true
+        const movieData = data.movie;
         const processedData = {
-          ...data,
-          category: Array.isArray(data.category) ? data.category : [],
-          country: Array.isArray(data.country) ? data.country : []
+          ...movieData,
+          category: Array.isArray(movieData.category) ? movieData.category : [],
+          country: Array.isArray(movieData.country) ? movieData.country : []
         };
-        
         setMovie(processedData);
+        
         setIsLoading(false);
       } catch (err) {
         console.error('Error fetching movie detail:', err);
@@ -45,7 +53,7 @@ export default function MovieDetail({ params }: MovieDetailProps) {
     };
     
     fetchMovieDetail();
-  }, [params]);
+  }, [slug]);
   
   if (isLoading) {
     return (
@@ -110,6 +118,7 @@ export default function MovieDetail({ params }: MovieDetailProps) {
                   src={getImageUrl(movie.poster_url)} 
                   alt={movie.name}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 30vw, 25vw"
                   className="object-cover"
                 />
               </div>
