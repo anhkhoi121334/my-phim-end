@@ -1,129 +1,161 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
-import { searchMovies } from '@/services/api/movieApi';
-import type { Movie } from '@/services/api/movieApi';
+import { useSearchParams } from 'next/navigation';
+import useSearch from '@/hooks/useSearch';
+import MovieCard from '@/components/MovieCard';
 
 export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
+  const {
+    searchInput,
+    results,
+    isLoading,
+    error,
+    currentPage,
+    totalPages,
+    searchHistory,
+    handleInputChange,
+    handleSubmit,
+    handlePageChange,
+    handleHistoryItemClick,
+    clearHistory,
+    removeFromHistory,
+  } = useSearch();
   
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  useEffect(() => {
-    if (!query) {
-      setMovies([]);
-      setLoading(false);
-      return;
-    }
-
-    const fetchSearchResults = async () => {
-      try {
-        setLoading(true);
-        const response = await searchMovies(query, page);
-        setMovies(response.data.items);
-        setTotalPages(response.data.totalPages);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error searching movies:', err);
-        setError('Không thể tìm kiếm phim. Vui lòng thử lại sau.');
-        setLoading(false);
-      }
-    };
-
-    fetchSearchResults();
-  }, [query, page]);
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-      window.scrollTo(0, 0);
-    }
-  };
+  // State to control history dropdown
+  const [showHistory, setShowHistory] = useState(false);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">
-        {query ? `Kết quả tìm kiếm cho: "${query}"` : 'Tìm kiếm phim'}
-      </h1>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-fuchsia-500"></div>
+    <div className="container mx-auto px-4 py-8 min-h-screen mt-[70px] page-transition">
+      <h1 className="text-3xl font-bold mb-6">Tìm kiếm phim</h1>
+      
+      <div className="mb-10 relative">
+        <form onSubmit={(e) => e && handleSubmit(e)}>
+          <div className="flex">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchInput || ''}
+                onChange={handleInputChange}
+                onFocus={() => Array.isArray(searchHistory) && searchHistory.length > 0 && setShowHistory(true)}
+                onBlur={() => setTimeout(() => setShowHistory(false), 200)}
+                placeholder="Nhập tên phim, diễn viên..."
+                className="w-full px-5 py-3 rounded-l-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              
+              {/* Search history dropdown */}
+              {showHistory && Array.isArray(searchHistory) && searchHistory.length > 0 && (
+                <div className="absolute z-10 top-full left-0 right-0 bg-gray-800 border border-gray-700 rounded-b-md shadow-lg mt-1">
+                  <div className="flex justify-between items-center p-3 border-b border-gray-700">
+                    <span className="text-gray-400 text-sm">Lịch sử tìm kiếm</span>
+                    <button
+                      onClick={() => clearHistory && clearHistory()}
+                      className="text-xs text-gray-400 hover:text-white"
+                    >
+                      Xóa tất cả
+                    </button>
+                  </div>
+                  <ul>
+                    {searchHistory.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center justify-between px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                        onClick={() => item && handleHistoryItemClick(item)}
+                      >
+                        <span>{item}</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            item && removeFromHistory && removeFromHistory(item);
+                          }}
+                          className="text-gray-400 hover:text-white"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                          </svg>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              className="px-5 py-3 bg-blue-600 text-white font-medium rounded-r-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      {isLoading ? (
+        <div className="flex justify-center my-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : error ? (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
+        <div className="text-center my-20">
+          <div className="text-red-500 mb-4">{error}</div>
+          <button
+            onClick={() => handlePageChange(1)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Thử lại
+          </button>
         </div>
-      ) : movies.length === 0 ? (
-        <div className="text-center py-10">
-          {query ? (
-            <p className="text-gray-500">Không tìm thấy phim nào phù hợp với từ khóa "{query}"</p>
-          ) : (
-            <p className="text-gray-500">Nhập từ khóa để tìm kiếm phim</p>
+      ) : !Array.isArray(results) || results.length === 0 ? (
+        <div className="text-center my-20">
+          <div className="text-xl mb-4">
+            {searchInput
+              ? 'Không tìm thấy kết quả nào cho từ khóa này.'
+              : 'Nhập từ khóa để tìm kiếm phim.'}
+          </div>
+          {searchInput && (
+            <div className="text-gray-400">
+              Hãy thử với từ khóa khác hoặc xem các phim đề xuất bên dưới.
+            </div>
           )}
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {movies.map((movie) => (
-              <div key={movie._id} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
-                <Link href={`/movie/${movie._id}`}>
-                  <div className="relative pb-[140%]">
-                    <img 
-                      src={movie.thumb_url || '/placeholder.jpg'} 
-                      alt={movie.name}
-                      className="absolute top-0 left-0 w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 right-2 bg-fuchsia-600 text-white text-xs px-2 py-1 rounded">
-                      {movie.quality}
-                    </div>
-                    {movie.lang && (
-                      <div className="absolute bottom-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
-                        {movie.lang}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <h3 className="text-white font-semibold line-clamp-2 h-12">{movie.name}</h3>
-                    <p className="text-gray-400 text-sm mt-1">{movie.origin_name}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-gray-400 text-sm">{movie.year}</span>
-                      <span className="text-fuchsia-400 text-sm">{movie.episode_current}</span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold">
+              Kết quả tìm kiếm cho "{searchInput}"
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            {results.map((movie) => movie && (
+              <MovieCard key={movie._id} movie={movie} />
             ))}
           </div>
-
+          
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-10">
               <div className="flex space-x-2">
                 <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className={`px-4 py-2 rounded ${
-                    page === 1 ? 'bg-gray-700 text-gray-400' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-700'
-                  }`}
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                  disabled={currentPage <= 1}
+                  className="px-4 py-2 rounded bg-gray-800 text-white disabled:opacity-50"
                 >
                   Trước
                 </button>
-                <span className="px-4 py-2 bg-gray-800 text-white rounded">
-                  {page} / {totalPages}
-                </span>
+                
+                <div className="px-4 py-2 rounded bg-blue-600 text-white">
+                  {currentPage} / {totalPages}
+                </div>
+                
                 <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  className={`px-4 py-2 rounded ${
-                    page === totalPages ? 'bg-gray-700 text-gray-400' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-700'
-                  }`}
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                  disabled={currentPage >= totalPages}
+                  className="px-4 py-2 rounded bg-gray-800 text-white disabled:opacity-50"
                 >
                   Sau
                 </button>
