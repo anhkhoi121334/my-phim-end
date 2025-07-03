@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import movieApi, { Movie } from '@/services/api/movieApi';
 import MovieCard from '@/components/MovieCard';
 
@@ -50,7 +48,7 @@ export default function TVSeriesPage() {
     const pages = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);

@@ -1,9 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import useSearch from '@/hooks/useSearch';
 import MovieCard from '@/components/MovieCard';
 
@@ -32,7 +29,7 @@ export default function SearchPage() {
       <h1 className="text-3xl font-bold mb-6">Tìm kiếm phim</h1>
       
       <div className="mb-10 relative">
-        <form onSubmit={(e) => e && handleSubmit(e)}>
+        <form onSubmit={handleSubmit}>
           <div className="flex">
             <div className="relative flex-1">
               <input
@@ -126,7 +123,7 @@ export default function SearchPage() {
         <>
           <div className="mb-6">
             <h2 className="text-xl font-semibold">
-              Kết quả tìm kiếm cho "{searchInput}"
+              Kết quả tìm kiếm cho &ldquo;{searchInput}&rdquo;
             </h2>
           </div>
           

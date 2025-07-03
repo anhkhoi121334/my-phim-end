@@ -256,21 +256,21 @@ export const getLatestMovies = async (
         };
       } else {
         console.error('Invalid response format from latest movies API, using fallback');
-        return await useFallbackLatestMovies(page, limit);
+        return await getFallbackLatestMovies(page, limit);
       }
     } catch (error) {
       console.error('Error fetching latest movies, trying fallback:', error);
-      return await useFallbackLatestMovies(page, limit);
+      return await getFallbackLatestMovies(page, limit);
     }
   } catch (error) {
     console.error('Error fetching latest movies:', error);
     // Use fallback when an error occurs
-    return await useFallbackLatestMovies(page, limit);
+    return await getFallbackLatestMovies(page, limit);
   }
 };
 
 // Helper function to get fallback movies
-const useFallbackLatestMovies = async (page: number, limit: number) => {
+const getFallbackLatestMovies = async (page: number, limit: number) => {
   try {
     const response = await fetchMoviesByGenre({
       genreSlug: 'hanh-dong', // Popular genre
@@ -564,18 +564,18 @@ export const fetchSingleMovies = async (
       };
     } catch (error) {
       console.error('Error fetching single movies, trying fallback:', error);
-      return await useFallbackSingleMovies(page, limit);
+      return await getFallbackSingleMovies(page, limit);
     }
   } catch (error) {
     console.error('Error fetching single movies:', error);
-    return await useFallbackSingleMovies(page, limit);
+    return await getFallbackSingleMovies(page, limit);
   }
 };
 
 /**
  * Fallback để lấy phim lẻ từ API khác
  */
-const useFallbackSingleMovies = async (page: number, limit: number) => {
+const getFallbackSingleMovies = async (page: number, limit: number) => {
   try {
     // Sử dụng API thể loại và lọc theo type=single
     const response = await fetchMoviesByGenre({
@@ -654,18 +654,18 @@ export const fetchTVSeries = async (
       };
     } catch (error) {
       console.error('Error fetching TV series, trying fallback:', error);
-      return await useFallbackTVSeries(page, limit);
+      return await getFallbackTVSeries(page, limit);
     }
   } catch (error) {
     console.error('Error fetching TV series:', error);
-    return await useFallbackTVSeries(page, limit);
+    return await getFallbackTVSeries(page, limit);
   }
 };
 
 /**
  * Fallback để lấy phim bộ từ API khác
  */
-const useFallbackTVSeries = async (page: number, limit: number) => {
+const getFallbackTVSeries = async (page: number, limit: number) => {
   try {
     // Sử dụng API thể loại và lọc theo type=series
     const response = await fetchMoviesByGenre({
@@ -744,18 +744,18 @@ export const fetchTheaterMovies = async (
       };
     } catch (error) {
       console.error('Error fetching theater movies, trying fallback:', error);
-      return await useFallbackTheaterMovies(page, limit);
+      return await getFallbackTheaterMovies(page, limit);
     }
   } catch (error) {
     console.error('Error fetching theater movies:', error);
-    return await useFallbackTheaterMovies(page, limit);
+    return await getFallbackTheaterMovies(page, limit);
   }
 };
 
 /**
  * Fallback để lấy phim chiếu rạp từ API khác
  */
-const useFallbackTheaterMovies = async (page: number, limit: number) => {
+const getFallbackTheaterMovies = async (page: number, limit: number) => {
   try {
     // Sử dụng API phim lẻ và lọc theo chất lượng cao
     const response = await fetchSingleMovies(page, limit * 2);
@@ -809,7 +809,7 @@ export const getRecommendedMovies = async (
 }> => {
   try {
     // Use fallback directly since the API endpoint doesn't exist
-    return await useFallbackRecommendedMovies(page, limit);
+    return await getFallbackRecommendedMovies(page, limit);
   } catch (error) {
     console.error('Error fetching recommended movies:', error);
     return {
@@ -828,7 +828,7 @@ export const getRecommendedMovies = async (
 /**
  * Fallback để lấy phim đề xuất từ API khác
  */
-const useFallbackRecommendedMovies = async (page: number, limit: number) => {
+const getFallbackRecommendedMovies = async (page: number, limit: number) => {
   try {
     // Sử dụng API thể loại phổ biến như hành động hoặc tình cảm
     const genres = ['hanh-dong', 'tinh-cam'];

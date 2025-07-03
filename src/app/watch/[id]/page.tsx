@@ -4,16 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import movieApi, { Movie, Episode, ServerData } from '@/services/api/movieApi';
-// @ts-ignore
 import Hls from 'hls.js';
 
-interface WatchProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function Watch({ params }: WatchProps) {
+export default function Watch() {
   const searchParams = useSearchParams();
   // Get episode from URL, handle both tap and ep parameters
   const episodeParam = searchParams.get('tap') || searchParams.get('ep') || 'tap-01';
@@ -204,10 +197,7 @@ export default function Watch({ params }: WatchProps) {
     }
   };
   
-  // Hàm chọn tập phim
-  const handleEpisodeChange = (episode: Episode) => {
-    setCurrentEpisode(episode);
-  };
+
   
   // Lọc và xử lý link embed và m3u8
   const embedUrl = currentEpisode?.link_embed || '';
