@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "name": "my-phim-v4",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "functions": {
+    "app/**": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["sin1"],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

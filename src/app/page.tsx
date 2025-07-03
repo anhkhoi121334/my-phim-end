@@ -13,7 +13,7 @@ export default function Home() {
   const [koreanMovies, setKoreanMovies] = useState<Movie[]>([]);
   const [chineseMovies, setChineseMovies] = useState<Movie[]>([]);
   const [theaterMovies, setTheaterMovies] = useState<Movie[]>([]);
-  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
@@ -33,7 +33,7 @@ export default function Home() {
     setTimeout(() => {
       setIsSliding(false);
     }, 500);
-  }, [selectedFeatureIndex, isSliding, trendingMovies.length]);
+  }, [selectedFeatureIndex, isSliding]);
 
   // Lấy tất cả phim mới
   const { data: animeData } = useAnime(50);

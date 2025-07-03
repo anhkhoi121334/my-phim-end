@@ -256,21 +256,21 @@ export const getLatestMovies = async (
         };
       } else {
         console.error('Invalid response format from latest movies API, using fallback');
-        return await useFallbackLatestMovies(page, limit);
+        return await getFallbackLatestMovies(page, limit);
       }
     } catch (error) {
       console.error('Error fetching latest movies, trying fallback:', error);
-      return await useFallbackLatestMovies(page, limit);
+      return await getFallbackLatestMovies(page, limit);
     }
   } catch (error) {
     console.error('Error fetching latest movies:', error);
     // Use fallback when an error occurs
-    return await useFallbackLatestMovies(page, limit);
+    return await getFallbackLatestMovies(page, limit);
   }
 };
 
 // Helper function to get fallback movies
-const useFallbackLatestMovies = async (page: number, limit: number) => {
+const getFallbackLatestMovies = async (page: number, limit: number) => {
   try {
     const response = await fetchMoviesByGenre({
       genreSlug: 'hanh-dong', // Popular genre
