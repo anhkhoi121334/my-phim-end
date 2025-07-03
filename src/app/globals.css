@@ -90,12 +90,12 @@ header {
 }
 
 .section-title {
-  @apply text-xl md:text-2xl font-bold text-white;
+  @apply text-xl md:text-2xl font-bold text-gray-900;
 }
 
 .section-title::before {
   content: "";
-  @apply w-1 h-6 bg-blue-500 rounded-full mr-2 inline-block;
+  @apply w-1 h-6 bg-blue-600 rounded-full mr-2 inline-block;
 }
 
 .quality-badge {
@@ -384,7 +384,7 @@ header {
 
 /* Custom styles */
 .section-title {
-  @apply text-xl md:text-2xl font-bold text-white;
+  @apply text-xl md:text-2xl font-bold text-gray-900;
 }
 
 /* Movie card styling */
@@ -455,4 +455,45 @@ header {
 /* Make sure pages without the main-content class still have proper spacing */
 main {
   min-height: calc(100vh - 70px);
+}
+
+/* Loading animations */
+@keyframes loading-progress {
+  0% {
+    width: 0%;
+    opacity: 1;
+  }
+  50% {
+    width: 70%;
+    opacity: 0.5;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-loading-progress {
+  animation: loading-progress 2s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading states */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }

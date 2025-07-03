@@ -808,33 +808,20 @@ export const getRecommendedMovies = async (
   pagination?: any;
 }> => {
   try {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    // Endpoint cho phim đề xuất
-    const url = `${API_BASE_URL}/v1/api/danh-sach/phim-de-xuat?${params.toString()}`;
-    
-    try {
-      const response = await axios.get<MovieResponse>(url);
-      return {
-        status: true,
-        items: response.data.data.items,
-        pagination: {
-          totalItems: response.data.data.totalItems,
-          totalItemsPerPage: limit,
-          currentPage: response.data.data.currentPage,
-          totalPages: response.data.data.totalPages
-        }
-      };
-    } catch (error) {
-      console.error('Error fetching recommended movies, trying fallback:', error);
-      return await useFallbackRecommendedMovies(page, limit);
-    }
+    // Use fallback directly since the API endpoint doesn't exist
+    return await useFallbackRecommendedMovies(page, limit);
   } catch (error) {
     console.error('Error fetching recommended movies:', error);
-    return await useFallbackRecommendedMovies(page, limit);
+    return {
+      status: false,
+      items: [],
+      pagination: {
+        totalItems: 0,
+        totalItemsPerPage: limit,
+        currentPage: 1,
+        totalPages: 0
+      }
+    };
   }
 };
 
@@ -894,6 +881,55 @@ const useFallbackRecommendedMovies = async (page: number, limit: number) => {
   }
 };
 
+/**
+ * Lấy danh sách phim hoạt hình
+ * @param page Trang cần lấy
+ * @param limit Số lượng phim trên mỗi trang
+ * @returns Promise với danh sách phim hoạt hình
+ */
+export const fetchAnimationMovies = async (
+  page = 1,
+  limit = 24
+): Promise<{
+  status: boolean;
+  items: Movie[];
+  pagination?: any;
+}> => {
+  try {
+    // Sử dụng API thể loại với slug hoat-hinh
+    const response = await fetchMoviesByGenre({
+      genreSlug: 'hoat-hinh',
+      page,
+      sortField: '_id',
+      sortType: 'desc',
+      limit
+    });
+    
+    return {
+      status: true,
+      items: response.data.items,
+      pagination: {
+        totalItems: response.data.totalItems,
+        totalItemsPerPage: limit,
+        currentPage: response.data.currentPage,
+        totalPages: response.data.totalPages
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching animation movies:', error);
+    return {
+      status: false,
+      items: [],
+      pagination: {
+        totalItems: 0,
+        totalItemsPerPage: limit,
+        currentPage: 1,
+        totalPages: 0
+      }
+    };
+  }
+};
+
 // Export default object với tất cả các hàm
 export default {
   fetchGenres,
@@ -909,5 +945,6 @@ export default {
   fetchSingleMovies,
   fetchTVSeries,
   fetchTheaterMovies,
-  getRecommendedMovies
+  getRecommendedMovies,
+  fetchAnimationMovies
 }; 

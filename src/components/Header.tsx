@@ -74,7 +74,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0a0e1a]/95 backdrop-blur-md shadow-lg border-b border-blue-500/20' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' : 'bg-transparent'}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-[70px]">
           {/* Logo */}
@@ -88,10 +88,10 @@ export default function Header() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-white">
-                My<span className="text-blue-500">Phim</span>
+              <span className="text-2xl font-bold text-gray-900">
+                My<span className="text-blue-600">Phim</span>
               </span>
-              <span className="text-xs text-gray-400 hidden sm:inline">Phim hay mỗi ngày</span>
+              <span className="text-xs text-gray-500 hidden sm:inline">Phim hay mỗi ngày</span>
             </div>
           </Link>
 
@@ -99,37 +99,37 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="/" 
-              className={`nav-link ${pathname === '/' ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname === '/' ? 'text-blue-600' : ''}`}
             >
               Trang chủ
             </Link>
             <Link 
               href="/the-loai" 
-              className={`nav-link ${pathname.includes('/the-loai') ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/the-loai') ? 'text-blue-600' : ''}`}
             >
               Thể loại
             </Link>
             <Link 
               href="/quoc-gia" 
-              className={`nav-link ${pathname.includes('/quoc-gia') ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/quoc-gia') ? 'text-blue-600' : ''}`}
             >
               Quốc gia
             </Link>
             <Link 
               href="/phim-le" 
-              className={`nav-link ${pathname.includes('/phim-le') ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-le') ? 'text-blue-600' : ''}`}
             >
               Phim lẻ
             </Link>
             <Link 
               href="/phim-bo" 
-              className={`nav-link ${pathname.includes('/phim-bo') ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-bo') ? 'text-blue-600' : ''}`}
             >
               Phim bộ
             </Link>
             <Link 
               href="/phim-chieu-rap" 
-              className={`nav-link ${pathname.includes('/phim-chieu-rap') ? 'active' : ''}`}
+              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-chieu-rap') ? 'text-blue-600' : ''}`}
             >
               Phim chiếu rạp
             </Link>
@@ -146,11 +146,11 @@ export default function Header() {
                   value={searchInput}
                   onChange={handleSearchInputChange}
                   onFocus={() => searchHistory.length > 0 && setShowSearchHistory(true)}
-                  className="w-40 md:w-64 py-2 pl-10 pr-4 rounded-full bg-[#131b2c] text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border border-blue-800 hover:border-blue-500 transition-all shadow-inner"
+                  className="w-40 md:w-64 py-2 pl-10 pr-4 rounded-full bg-gray-100 text-gray-900 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-200 hover:border-blue-500 transition-all shadow-inner"
                 />
                 <button 
                   type="submit" 
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-blue-300 transition-colors"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -160,12 +160,12 @@ export default function Header() {
               
               {/* Search history dropdown */}
               {showSearchHistory && Array.isArray(searchHistory) && searchHistory.length > 0 && (
-                <div className="absolute left-0 right-0 mt-2 w-full bg-[#0a0e1a] border border-blue-500/20 rounded-lg shadow-lg z-50 backdrop-blur-md">
+                <div className="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <ul className="rounded-lg overflow-hidden">
                     {searchHistory.slice(0, 5).map((item, index) => (
                       <li
                         key={index}
-                        className="px-4 py-2 hover:bg-blue-500/20 cursor-pointer flex items-center text-sm transition-colors"
+                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center text-sm transition-colors text-gray-700"
                         onClick={() => {
                           if (item) {
                             handleHistoryItemClick(item);
@@ -173,17 +173,17 @@ export default function Header() {
                           }
                         }}
                       >
-                        <svg className="w-4 h-4 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span className="truncate">{item}</span>
                       </li>
                     ))}
-                    <li className="border-t border-blue-800/30">
+                    <li className="border-t border-gray-100">
                       <Link
                         href="/search"
                         onClick={() => setShowSearchHistory(false)}
-                        className="block px-4 py-2 text-sm text-blue-400 hover:bg-blue-500/20 transition-colors"
+                        className="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-50 transition-colors"
                       >
                         Xem tất cả kết quả tìm kiếm
                       </Link>
@@ -195,7 +195,7 @@ export default function Header() {
 
             {/* Menu người dùng */}
             <div className="hidden md:block">
-              <Link href="/login" className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-sm font-medium px-6 py-2 rounded-md transition-colors shadow-md hover:shadow-lg">
+              <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2 rounded-md transition-colors shadow-md hover:shadow-lg">
                 Đăng nhập
               </Link>
             </div>

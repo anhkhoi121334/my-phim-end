@@ -6,7 +6,7 @@ export interface Movie {
   name: string;
   origin_name: string;
   slug: string;
-  type: string;
+  type?: string;
   thumb_url: string;
   poster_url: string;
   year: number;
@@ -19,6 +19,17 @@ export interface Movie {
   imdb?: string;
   category: Array<{ name: string; slug: string }>;
   country: Array<{ name: string; slug: string }>;
+  tmdb?: {
+    type: string;
+    id: string;
+    season: number;
+    vote_average: number;
+    vote_count: number;
+  };
+  rating?: {
+    vote_average: number;
+    vote_count: number;
+  };
 }
 
 /**
