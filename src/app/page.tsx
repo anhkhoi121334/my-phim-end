@@ -162,6 +162,9 @@ export default function Home() {
           movie={featuredMovie}
           isSliding={isSliding}
           onBannerClick={handleBannerClick}
+          previewImages={trendingMovies}
+          onPreviewClick={changeSlide}
+          currentIndex={selectedFeatureIndex}
         />
       )}
 
