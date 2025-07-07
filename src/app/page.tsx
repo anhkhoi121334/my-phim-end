@@ -20,6 +20,11 @@ export default function Home() {
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   
+  // Đảm bảo chỉ lấy phim không trùng lặp bằng cách kiểm tra slug
+  const uniqueLatestMovies = latestMovies?.filter((movie, index, self) => 
+    self.findIndex(m => m.slug === movie.slug) === index
+  ).slice(0, 5) || [];
+  
   // Callback để chuyển đổi slider
   const changeSlide = useCallback((index: number) => {
     if (isSliding) return; // Ngăn chặn nhiều lần click liên tiếp
@@ -27,25 +32,28 @@ export default function Home() {
     
     setIsSliding(true);
     
-    // Cập nhật index và kết thúc animation sau 500ms
+    // Cập nhật index và kết thúc animation sau 1000ms
     setSelectedFeatureIndex(index);
     
     const timer = setTimeout(() => {
       setIsSliding(false);
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [selectedFeatureIndex, isSliding]);
 
   // Auto-slide effect
-  useEffect(() => {
-    const autoSlideTimer = setInterval(() => {
-      const nextIndex = (selectedFeatureIndex + 1) % (trendingMovies.length || 1);
-      changeSlide(nextIndex);
-    }, 5000);
+useEffect(() => {
+  // Only set up the interval if we have movies to display
+  if (uniqueLatestMovies.length === 0) return;
+  
+  const autoSlideTimer = setInterval(() => {
+    const nextIndex = (selectedFeatureIndex + 1) % uniqueLatestMovies.length;
+    changeSlide(nextIndex);
+  }, 10000);
 
-    return () => clearInterval(autoSlideTimer);
-  }, [selectedFeatureIndex, trendingMovies.length, changeSlide]);
+  return () => clearInterval(autoSlideTimer);
+}, [selectedFeatureIndex, changeSlide, uniqueLatestMovies.length]);
 
   // Lấy tất cả phim mới
   const { data: animeData } = useAnime(50);
@@ -116,10 +124,9 @@ export default function Home() {
         <div className="text-center">
           <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em]" role="status">
             <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-              Đang tải...
+              Loading...
             </span>
           </div>
-          <p className="mt-4 text-lg">Đang tải dữ liệu phim...</p>
         </div>
       </div>
     );
@@ -145,8 +152,8 @@ export default function Home() {
   }
 
   // Lấy phim nổi bật cho banner
-  const featuredMovie = trendingMovies?.length > 0 ? 
-    trendingMovies[selectedFeatureIndex % trendingMovies.length] : null;
+  const featuredMovie = uniqueLatestMovies?.length > 0 ? 
+    uniqueLatestMovies[selectedFeatureIndex % uniqueLatestMovies.length] : null;
 
   const handleBannerClick = () => {
     if (featuredMovie?.slug) {
@@ -162,6 +169,13 @@ export default function Home() {
           movie={featuredMovie}
           isSliding={isSliding}
           onBannerClick={handleBannerClick}
+          allMovies={uniqueLatestMovies}
+          currentIndex={selectedFeatureIndex}
+          onThumbnailClick={(index) => {
+            if (index !== selectedFeatureIndex) {
+              changeSlide(index);
+            }
+          }}
         />
       )}
 

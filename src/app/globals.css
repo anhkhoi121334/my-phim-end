@@ -197,11 +197,8 @@ header {
 .hero-banner {
   position: relative;
   width: 100%;
-  height: 100vh;
-  max-height: 700px;
-  overflow: hidden;
-  margin-top: -10px;
-  padding-top: 70px;
+  height: 70vh;
+  max-height: 600px;
 }
 
 .hero-banner::after {
@@ -210,68 +207,36 @@ header {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to top, rgba(10, 14, 26, 0.99), transparent);
-  z-index: 10;
+  height: 40%;
+  background: linear-gradient(to top, rgba(10, 14, 26, 1), rgba(10, 14, 26, 0));
+  z-index: 1;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .hero-banner {
-    height: 90vh;
-    max-height: 800px;
+    height: 60vh;
+    max-height: 500px;
   }
 }
 
-.movie-title-wrapper {
-  display: inline-block;
-  position: relative;
-  margin: 10px 0;
-}
-
-.movie-title-line {
-  display: inline-block;
-  position: relative;
-  color: white;
-  line-height: 1.2;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+/* Updated Movie Title Styles */
+.movie-title {
   font-family: 'Be Vietnam Pro', sans-serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 900;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.5px;
+  animation: fadeSlideDown 0.8s ease-out forwards;
 }
 
-.movie-title-line::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -8px;
-  width: 40%;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6, transparent);
-  border-radius: 2px;
-}
+/* Remove old typewriter styles */
 
-.movie-title-second-line {
-  margin-top: -15px;
-}
-
-@media (max-width: 768px) {
-  .movie-title-line {
-    font-size: 2rem;
-  }
-  
-  .movie-title-second-line {
-    margin-top: -5px;
-  }
-}
-
-/* Điều hướng thumbnail */
 .thumbnail-nav {
   position: absolute;
-  bottom: 2.5rem;
+  bottom: 20px;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 30;
 }
 
 .category-pill {
@@ -279,7 +244,7 @@ header {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
-  padding: 0.25rem 0.75rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 9999px;
   font-weight: 500;
   backdrop-filter: blur(4px);
@@ -353,11 +318,13 @@ header {
 .slide-fade-in {
   opacity: 1;
   transform: translateY(0);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
 }
 
 .slide-fade-out {
   opacity: 0;
   transform: translateY(20px);
+  transition: opacity 0.7s ease-in, transform 0.7s ease-in;
 }
 
 /* Trang nội dung phim */
@@ -497,3 +464,29 @@ main {
     background-position: 200% 0;
   }
 }
+
+/* Latest movies label */
+.latest-movies-label {
+  transform: translateY(-10px);
+  opacity: 0;
+  animation: fadeSlideDown 0.8s ease-out 0.3s forwards;
+}
+
+@keyframes fadeSlideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-content-exit .latest-movies-label {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in;
+}
+
+/* Movie title animation */
