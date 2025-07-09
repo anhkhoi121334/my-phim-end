@@ -74,98 +74,121 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/95 backdrop-blur-xl shadow-2xl border-b border-gray-200/50' : 'bg-transparent'}`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-[70px]">
-          {/* Logo */}
+          {/* Enhanced Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative h-10 w-10 mr-3 overflow-hidden">
-              <Image 
-                src="/myphim-logo.svg" 
-                alt="Logo MyPhim" 
-                fill
-                className="object-contain transition-transform group-hover:scale-105"
-              />
+            <div className="relative h-12 w-12 mr-3 overflow-hidden rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 p-1">
+              <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                <Image 
+                  src="/myphim-logo.svg" 
+                  alt="Logo MyPhim" 
+                  width={32}
+                  height={32}
+                  className="object-contain transition-transform group-hover:scale-110"
+                />
+              </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-bold text-gray-900">
-                My<span className="text-blue-600">Phim</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                My<span className="text-gradient-primary">Phim</span>
               </span>
-              <span className="text-xs text-gray-500 hidden sm:inline">Phim hay mỗi ngày</span>
+              <span className="text-xs text-gray-500 hidden sm:inline font-medium">Phim hay mỗi ngày</span>
             </div>
           </Link>
 
-          {/* Menu Desktop */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Enhanced Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-1">
             <Link 
               href="/" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname === '/' ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname === '/' ? 'active' : ''}`}
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
               Trang chủ
             </Link>
             <Link 
               href="/the-loai" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/the-loai') ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname.includes('/the-loai') ? 'active' : ''}`}
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"/>
+              </svg>
               Thể loại
             </Link>
             <Link 
               href="/quoc-gia" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/quoc-gia') ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname.includes('/quoc-gia') ? 'active' : ''}`}
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
               Quốc gia
             </Link>
             <Link 
               href="/phim-le" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-le') ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname.includes('/phim-le') ? 'active' : ''}`}
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
               Phim lẻ
             </Link>
             <Link 
               href="/phim-bo" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-bo') ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname.includes('/phim-bo') ? 'active' : ''}`}
             >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
               Phim bộ
             </Link>
             <Link 
               href="/phim-chieu-rap" 
-              className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${pathname.includes('/phim-chieu-rap') ? 'text-blue-600' : ''}`}
+              className={`nav-link ${pathname.includes('/phim-chieu-rap') ? 'active' : ''}`}
             >
-              Phim chiếu rạp
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"/>
+              </svg>
+              Chiếu rạp
             </Link>
           </nav>
 
-          {/* Tìm kiếm và Đăng nhập */}
-          <div className="flex items-center">
-            {/* Form tìm kiếm */}
-            <div id="search-container" className="relative mr-4">
+          {/* Enhanced Search and User Actions */}
+          <div className="flex items-center gap-4">
+            {/* Enhanced Search Form */}
+            <div id="search-container" className="relative">
               <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm phim, diễn viên..."
-                  value={searchInput}
-                  onChange={handleSearchInputChange}
-                  onFocus={() => searchHistory.length > 0 && setShowSearchHistory(true)}
-                  className="w-40 md:w-64 py-2 pl-10 pr-4 rounded-full bg-gray-100 text-gray-900 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-200 hover:border-blue-500 transition-all shadow-inner"
-                />
-                <button 
-                  type="submit" 
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                  </svg>
-                </button>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm phim, diễn viên..."
+                    value={searchInput}
+                    onChange={handleSearchInputChange}
+                    onFocus={() => searchHistory.length > 0 && setShowSearchHistory(true)}
+                    className="w-48 lg:w-64 py-2.5 pl-11 pr-4 rounded-xl bg-white/90 backdrop-blur-sm text-gray-900 placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border border-gray-200/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg"
+                  />
+                  <button 
+                    type="submit" 
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                  </button>
+                </div>
               </form>
               
-              {/* Search history dropdown */}
+              {/* Enhanced Search History Dropdown */}
               {showSearchHistory && Array.isArray(searchHistory) && searchHistory.length > 0 && (
-                <div className="absolute left-0 right-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <ul className="rounded-lg overflow-hidden">
+                <div className="absolute left-0 right-0 mt-2 w-full bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl z-50">
+                  <ul className="rounded-xl overflow-hidden">
                     {searchHistory.slice(0, 5).map((item, index) => (
                       <li
                         key={index}
-                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center text-sm transition-colors text-gray-700"
+                        className="px-4 py-3 hover:bg-gray-50/80 cursor-pointer flex items-center text-sm transition-colors text-gray-700 border-b border-gray-100/50 last:border-b-0"
                         onClick={() => {
                           if (item) {
                             handleHistoryItemClick(item);
@@ -173,19 +196,24 @@ export default function Header() {
                           }
                         }}
                       >
-                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span className="truncate">{item}</span>
+                        <span className="truncate font-medium">{item}</span>
                       </li>
                     ))}
-                    <li className="border-t border-gray-100">
+                    <li className="border-t border-gray-100/50">
                       <Link
                         href="/search"
                         onClick={() => setShowSearchHistory(false)}
-                        className="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-50 transition-colors"
+                        className="block px-4 py-3 text-sm text-blue-600 hover:bg-blue-50/80 transition-colors font-medium"
                       >
-                        Xem tất cả kết quả tìm kiếm
+                        <div className="flex items-center">
+                          <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                          </svg>
+                          Xem tất cả kết quả tìm kiếm
+                        </div>
                       </Link>
                     </li>
                   </ul>
@@ -193,128 +221,116 @@ export default function Header() {
               )}
             </div>
 
-            {/* Menu người dùng */}
-            <div className="hidden md:block">
-              <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2 rounded-md transition-colors shadow-md hover:shadow-lg">
+            {/* Enhanced User Menu */}
+            <div className="hidden md:flex items-center gap-3">
+              <Link 
+                href="/login" 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
                 Đăng nhập
               </Link>
             </div>
 
-            {/* Mobile menu button */}
-            <button 
+            {/* Enhanced Mobile Menu Button */}
+            <button
               id="menu-button"
-              className="md:hidden flex items-center text-white focus:outline-none" 
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              aria-label="Menu"
+              className="lg:hidden p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300"
             >
-              <div className="relative w-6 h-6 transform transition-all duration-300">
-                <span className={`absolute h-0.5 w-6 bg-white rounded-full transform transition-all duration-300 ${showMobileMenu ? 'rotate-45 translate-y-2.5' : ''}`}
-                      style={{ top: '0px' }}></span>
-                <span className={`absolute h-0.5 w-6 bg-white rounded-full transform transition-all duration-300 ${showMobileMenu ? 'opacity-0' : ''}`}
-                      style={{ top: '8px' }}></span>
-                <span className={`absolute h-0.5 w-6 bg-white rounded-full transform transition-all duration-300 ${showMobileMenu ? '-rotate-45 -translate-y-2.5' : ''}`}
-                      style={{ top: '16px' }}></span>
-              </div>
+              <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu - Simplified dropdown style */}
-      {showMobileMenu && (
-        <div className="md:hidden absolute top-[70px] left-0 right-0 bg-[#0a0e1a]/95 backdrop-blur-md border-b border-blue-500/20 shadow-lg z-40">
-          <div className="px-4 py-2">
-            <nav>
-              <ul className="space-y-1">
-                <li>
-                  <Link 
-                    href="/" 
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname === '/' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    <span>Trang chủ</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/the-loai"
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname.includes('/the-loai') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-                    </svg>
-                    <span>Thể loại</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/quoc-gia"
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname.includes('/quoc-gia') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                    <span>Quốc gia</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/phim-le"
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname.includes('/phim-le') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
-                    </svg>
-                    <span>Phim lẻ</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/phim-bo"
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname.includes('/phim-bo') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                    </svg>
-                    <span>Phim bộ</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/phim-chieu-rap"
-                    className={`flex items-center py-2 px-3 rounded-md ${pathname.includes('/phim-chieu-rap') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-blue-500/20 hover:text-white'} transition-all duration-200`}
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h18M3 12h18M3 16h18M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
-                    </svg>
-                    <span>Phim chiếu rạp</span>
-                  </Link>
-                </li>
-                <li className="border-t border-blue-800/30 pt-2 mt-2">
-                  <Link 
-                    href="/login" 
-                    className="flex items-center justify-center py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                    </svg>
-                    <span>Đăng nhập</span>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
+        {/* Enhanced Mobile Menu */}
+        {showMobileMenu && (
+          <div id="mobile-menu" className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200/50 shadow-2xl">
+            <div className="container mx-auto px-4 py-6">
+              <nav className="grid grid-cols-2 gap-4">
+                <Link 
+                  href="/" 
+                  className={`mobile-nav-link ${pathname === '/' ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                  </svg>
+                  Trang chủ
+                </Link>
+                <Link 
+                  href="/the-loai" 
+                  className={`mobile-nav-link ${pathname.includes('/the-loai') ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"/>
+                  </svg>
+                  Thể loại
+                </Link>
+                <Link 
+                  href="/quoc-gia" 
+                  className={`mobile-nav-link ${pathname.includes('/quoc-gia') ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Quốc gia
+                </Link>
+                <Link 
+                  href="/phim-le" 
+                  className={`mobile-nav-link ${pathname.includes('/phim-le') ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Phim lẻ
+                </Link>
+                <Link 
+                  href="/phim-bo" 
+                  className={`mobile-nav-link ${pathname.includes('/phim-bo') ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  </svg>
+                  Phim bộ
+                </Link>
+                <Link 
+                  href="/phim-chieu-rap" 
+                  className={`mobile-nav-link ${pathname.includes('/phim-chieu-rap') ? 'active' : ''}`}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"/>
+                  </svg>
+                  Chiếu rạp
+                </Link>
+              </nav>
+              
+              {/* Mobile Login Button */}
+              <div className="mt-6 pt-6 border-t border-gray-200/50">
+                <Link 
+                  href="/login" 
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  Đăng nhập
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 } 
