@@ -150,14 +150,14 @@ export default function Home() {
 
   return (
     <main className="page-transition main-content">
-      {/* Enhanced Hero Banner */}
+      {/* Enhanced Hero Banner with Better Animation */}
       {featuredMovie && (
         <div className="relative">
           <section 
             className="hero-banner cursor-pointer group" 
             onClick={handleBannerClick}
           >
-            {/* Enhanced Background Image */}
+            {/* Enhanced Background Image with Parallax Effect */}
             <div className={`absolute inset-0 z-0 transition-all duration-700 ease-in-out ${isSliding ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}>
               <Image
                 src={getImageUrl(featuredMovie.thumb_url || featuredMovie.poster_url)}
@@ -167,57 +167,59 @@ export default function Home() {
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 priority
               />
-              {/* Enhanced Gradient Overlay */}
+              {/* Enhanced Gradient Overlay with Animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              {/* Animated Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
 
-            {/* Enhanced Content */}
+            {/* Enhanced Content with Better Animation */}
             <div className={`absolute inset-0 flex items-center md:items-start transition-all duration-500 ease-in-out ${isSliding ? 'slide-fade-out' : 'slide-fade-in'}`}>
               <div className="container mx-auto px-4 pt-10 md:pt-32">
                 <div className="flex flex-col md:flex-row items-center">
-                  {/* Enhanced Movie Info */}
+                  {/* Enhanced Movie Info with Better Typography */}
                   <div className="w-full text-white z-10 max-w-4xl">
                     <div className="mb-6 md:mb-8">
                       <div className="movie-title-wrapper">
-                        <h1 className="movie-title-line text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight">
+                        <h1 className="movie-title-line text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight drop-shadow-2xl">
                           {featuredMovie.name}
                         </h1>
                         {featuredMovie.origin_name && featuredMovie.origin_name !== featuredMovie.name && (
-                          <p className="movie-title-second-line text-xl md:text-2xl lg:text-3xl mt-2 font-medium">
+                          <p className="movie-title-second-line text-xl md:text-2xl lg:text-3xl mt-2 font-medium drop-shadow-lg">
                             {featuredMovie.origin_name}
                           </p>
                         )}
                       </div>
                     </div>
                     
-                    {/* Enhanced Movie Details */}
+                    {/* Enhanced Movie Details with Better Styling */}
                     <div className="flex flex-wrap gap-3 md:gap-4 my-4 md:my-6">
-                      <span className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 rounded-full text-sm md:text-base font-bold shadow-lg">
+                      <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 px-4 py-2 rounded-full text-sm md:text-base font-bold shadow-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105">
                         {featuredMovie.quality}
                       </span>
                       {featuredMovie.category.map((cat, index) => (
-                        <span key={index} className="category-pill text-sm md:text-base">
+                        <span key={index} className="category-pill text-sm md:text-base hover:scale-105 transition-transform duration-300">
                           {cat.name}
                         </span>
                       )).slice(0, 3)}
                     </div>
                     
-                    {/* Enhanced Movie Stats */}
+                    {/* Enhanced Movie Stats with Icons */}
                     <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-6 md:mb-8 text-sm md:text-base">
-                      <div className="flex items-center bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
+                      <div className="flex items-center bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm hover:bg-black/60 transition-all duration-300 transform hover:scale-105">
                         <svg className="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                         <span className="font-semibold">{featuredMovie.year}</span>
                       </div>
-                      <div className="flex items-center bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
+                      <div className="flex items-center bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm hover:bg-black/60 transition-all duration-300 transform hover:scale-105">
                         <svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span className="font-semibold">{featuredMovie.time}</span>
                       </div>
-                      <div className="flex items-center bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
+                      <div className="flex items-center bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm hover:bg-black/60 transition-all duration-300 transform hover:scale-105">
                         <svg className="w-5 h-5 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                         </svg>
@@ -228,11 +230,11 @@ export default function Home() {
                       </div>
                     </div>                  
                     
-                    {/* Enhanced Action Buttons */}
+                    {/* Enhanced Action Buttons with Shine Effect */}
                     <div className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-10">
                       <Link 
                         href={`/watch/${featuredMovie.slug}`} 
-                        className="watch-button btn-animate"
+                        className="watch-button btn-animate btn-shine hover-lift-enhanced"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +245,7 @@ export default function Home() {
                       </Link>
                       <Link 
                         href={`/movie/${featuredMovie.slug}`} 
-                        className="details-button btn-animate"
+                        className="details-button btn-animate hover-lift-enhanced"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,14 +259,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Enhanced Thumbnail Navigation */}
+            {/* Enhanced Thumbnail Navigation with Better Animation */}
             <div className="thumbnail-nav">
               <div className="container mx-auto px-4">
                 <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 md:pb-6 scrollbar-hide">
                   {trendingMovies.slice(0, 6).map((movie, index) => (
                     <button 
                       key={movie._id}
-                      className={`thumbnail-button ${selectedFeatureIndex === index ? 'active' : ''}`}
+                      className={`thumbnail-button hover-lift-enhanced ${selectedFeatureIndex === index ? 'active' : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         changeSlide(index);
@@ -275,11 +277,11 @@ export default function Home() {
                           src={getImageUrl(movie.thumb_url || movie.poster_url)} 
                           alt={movie.name}
                           fill
-                          className="object-cover"
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-black/50"></div>
+                        <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all duration-300"></div>
                         <div className="absolute bottom-0 left-0 right-0 p-2 md:p-3">
-                          <p className="text-white text-xs md:text-sm font-medium line-clamp-1">{movie.name}</p>
+                          <p className="text-white text-xs md:text-sm font-medium line-clamp-1 group-hover:text-blue-200 transition-colors duration-300">{movie.name}</p>
                         </div>
                       </div>
                     </button>
@@ -291,41 +293,43 @@ export default function Home() {
         </div>
       )}
 
-      {/* Enhanced Main Content */}
+      {/* Enhanced Main Content with Better Spacing */}
       <div className="movie-content-page">
-        {/* Enhanced Latest Movies Section */}
-        <section className="mb-16">
+        {/* Enhanced Latest Movies Section with Animation */}
+        <section className="mb-16 animate-fade-in">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="section-title">Phim mới cập nhật</h2>
-            <Link href="/phim-moi" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group">
+            <h2 className="section-title text-gradient-animate">Phim mới cập nhật</h2>
+            <Link href="/phim-moi" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group hover-lift-enhanced">
               Xem tất cả
-              <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </Link>
           </div>
           <div className="movie-grid">
-            {latestMovies.map(movie => (
-              <MovieCard key={movie._id} movie={movie} />
+            {latestMovies.map((movie, index) => (
+              <div key={movie._id} className="animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <MovieCard movie={movie} />
+              </div>
             ))}
           </div>
         </section>
 
-        {/* Enhanced Theater Movies Section */}
+        {/* Enhanced Theater Movies Section with Better Layout */}
         {theaterMovies && theaterMovies.length > 0 && (
-          <section className="mb-16">
+          <section className="mb-16 animate-fade-in">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="section-title">Phim chiếu rạp</h2>
-              <Link href="/phim-chieu-rap" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group">
+              <h2 className="section-title text-gradient-animate">Phim chiếu rạp</h2>
+              <Link href="/phim-chieu-rap" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group hover-lift-enhanced">
                 Xem tất cả
-                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {theaterMovies.map(movie => (
-                <div key={movie._id} className="relative aspect-video rounded-2xl overflow-hidden group card-hover-lift">
+              {theaterMovies.map((movie, index) => (
+                <div key={movie._id} className="relative aspect-video rounded-2xl overflow-hidden group card-hover-lift card-tilt animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
                   <Image
                     src={getImageUrl(movie.thumb_url || movie.poster_url)}
                     alt={movie.name}
@@ -334,12 +338,12 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-300"></div>
                   <Link href={`/movie/${movie.slug}`} className="absolute inset-0 p-6 flex flex-col justify-end">
-                    <h3 className="text-xl font-bold text-white line-clamp-2 mb-2">{movie.name}</h3>
+                    <h3 className="text-xl font-bold text-white line-clamp-2 mb-2 group-hover:text-blue-200 transition-colors duration-300">{movie.name}</h3>
                     {movie.origin_name && movie.origin_name !== movie.name && (
                       <p className="text-sm text-gray-200 mb-3 line-clamp-1">{movie.origin_name}</p>
                     )}
                     <div className="flex items-center gap-3">
-                      <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg">
+                      <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg hover:shadow-glow transition-all duration-300">
                         {movie.quality || 'HD'}
                       </span>
                       <span className="text-gray-200 text-sm font-medium">{movie.year}</span>
@@ -353,19 +357,21 @@ export default function Home() {
 
         {/* Enhanced TV Series Section */}
         {tvSeries && tvSeries.length > 0 && (
-          <section className="mb-16">
+          <section className="mb-16 animate-fade-in">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="section-title">Phim bộ mới</h2>
-              <Link href="/phim-bo" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group">
+              <h2 className="section-title text-gradient-animate">Phim bộ mới</h2>
+              <Link href="/phim-bo" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group hover-lift-enhanced">
                 Xem tất cả
-                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </Link>
             </div>
             <div className="movie-grid">
-              {tvSeries.map(movie => (
-                <MovieCard key={movie._id} movie={movie} />
+              {tvSeries.map((movie, index) => (
+                <div key={movie._id} className="animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <MovieCard movie={movie} />
+                </div>
               ))}
             </div>
           </section>
@@ -373,19 +379,21 @@ export default function Home() {
 
         {/* Enhanced Korean Movies Section */}
         {koreanMovies && koreanMovies.length > 0 && (
-          <section className="mb-16">
+          <section className="mb-16 animate-fade-in">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="section-title">Phim Hàn Quốc</h2>
-              <Link href="/quoc-gia/han-quoc" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group">
+              <h2 className="section-title text-gradient-animate">Phim Hàn Quốc</h2>
+              <Link href="/quoc-gia/han-quoc" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group hover-lift-enhanced">
                 Xem tất cả
-                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </Link>
             </div>
             <div className="movie-grid">
-              {koreanMovies.map(movie => (
-                <MovieCard key={movie._id} movie={movie} />
+              {koreanMovies.map((movie, index) => (
+                <div key={movie._id} className="animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <MovieCard movie={movie} />
+                </div>
               ))}
             </div>
           </section>
@@ -393,19 +401,21 @@ export default function Home() {
 
         {/* Enhanced Chinese Movies Section */}
         {chineseMovies && chineseMovies.length > 0 && (
-          <section className="mb-16">
+          <section className="mb-16 animate-fade-in">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="section-title">Phim Trung Quốc</h2>
-              <Link href="/quoc-gia/trung-quoc" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group">
+              <h2 className="section-title text-gradient-animate">Phim Trung Quốc</h2>
+              <Link href="/quoc-gia/trung-quoc" className="text-blue-600 hover:text-blue-700 transition-colors text-sm font-semibold flex items-center group hover-lift-enhanced">
                 Xem tất cả
-                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                 </svg>
               </Link>
             </div>
             <div className="movie-grid">
-              {chineseMovies.map(movie => (
-                <MovieCard key={movie._id} movie={movie} />
+              {chineseMovies.map((movie, index) => (
+                <div key={movie._id} className="animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <MovieCard movie={movie} />
+                </div>
               ))}
             </div>
           </section>
