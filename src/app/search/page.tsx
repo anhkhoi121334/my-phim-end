@@ -65,7 +65,9 @@ export default function SearchPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            item && removeFromHistory && removeFromHistory(item);
+                            if (item && removeFromHistory) {
+                              removeFromHistory(item);
+                            }
                           }}
                           className="text-gray-400 hover:text-white"
                         >

@@ -39,101 +39,123 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
   }, [movie, isSliding]);
 
   return (
-    <div className="relative">
-      <section className="hero-banner cursor-pointer" onClick={onBannerClick}>
-        {/* Fixed dark background to prevent gray showing during transitions */}
+    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden">
+      <section 
+        className="relative w-full h-full cursor-pointer" 
+        onClick={onBannerClick}
+      >
+        {/* Fixed dark background */}
         <div className="absolute inset-0 bg-[#0d1117] z-0"></div>
         
-        {/* Ảnh nền với lớp phủ Gradient */}
-        <div className={`absolute inset-0 z-1 transition-opacity duration-700 ease-in-out bg-[#0d1117] ${isSliding ? 'opacity-0' : 'opacity-100'}`}>
-          <Image
-            src={getImageUrl(movie.thumb_url || movie.poster_url)}
-            alt={movie.name}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            style={{ transform: isSliding ? 'scale(1.05)' : 'scale(1)', transition: 'transform 700ms ease-in-out' }}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0d1117] via-[#0d1117]/80 to-transparent z-10"></div>
+        {/* Background image with gradient overlay */}
+        <div className={`absolute inset-0 z-1 ${isSliding ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700 ease-out`}>
+          <div className="relative w-full h-full">
+            <Image
+              src={getImageUrl(movie.thumb_url)}
+              alt={movie.name}
+              fill
+              sizes="100vw"
+              className="object-cover object-top"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0d1117] via-[#0d1117]/90 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/70 to-transparent"></div>
+          </div>
         </div>
 
-        {/* Phần nội dung */}
-        <div className={`absolute inset-0 flex items-center md:items-start z-20 transition-all duration-700 ease-in-out ${isSliding ? 'slide-fade-out' : 'slide-fade-in'}`}>
-          <div className="container mx-auto px-4 pt-6 md:pt-20">
-            <div className="flex flex-col md:flex-row items-center">
-              {/* Thông tin phim - Bên trái */}
-              <div className="w-full text-white">
-                {/* Latest movies label */}
-                <div className="mb-1 md:mb-2 latest-movies-label">
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 px-2 py-0.5 rounded-full text-xs font-bold tracking-wider">
-                    PHIM MỚI CẬP NHẬT
+        {/* Content */}
+        <div className={`absolute inset-0 z-20 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'} transition-all duration-700 ease-out`}>
+          <div className="container mx-auto px-4 h-full flex items-end md:items-center pb-30 md:pb-0">
+            <div className="w-full max-w-3xl">
+              {/* Latest movies label */}
+              <div className="mb-3 md:mb-5">
+                <span className="inline-block bg-blue-600 px-3 py-1 md:px-4 md:py-1.5 rounded text-[10px] md:text-sm font-bold tracking-wider text-white uppercase">
+                  Phim Mới Cập Nhật
+                </span>
+              </div>
+              
+              {/* Movie title */}
+              <h1 className="text-xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-1.5 md:mb-3 line-clamp-2">
+                {movie.name}
+              </h1>
+              {movie.origin_name && movie.origin_name !== movie.name && (
+                <p className="text-xs md:text-lg lg:text-xl text-gray-400 mb-3 md:mb-6 line-clamp-1 italic">
+                  {movie.origin_name}
+                </p>
+              )}
+              
+              {/* Categories */}
+              <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                <span className="bg-blue-600 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded text-[10px] md:text-sm text-white font-medium">
+                  {movie.quality}
+                </span>
+                {movie.category.slice(0, 3).map((cat, index) => (
+                  <span 
+                    key={index} 
+                    className="bg-white/5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded text-[10px] md:text-sm text-white font-medium"
+                  >
+                    {cat.name}
+                  </span>
+                ))}
+              </div>
+              
+              {/* Movie info */}
+              <div className="grid grid-cols-2 gap-y-2 md:grid-cols-4 md:gap-6 mb-4 md:mb-8 text-xs md:text-sm">
+                <div className="flex items-center">
+                  <span className="text-blue-500 mr-2">Năm:</span>
+                  <span className="text-white">{movie.year}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-blue-500 mr-2">Thời lượng:</span>
+                  <span className="text-white">
+                    {movie.episode_total ? `${movie.episode_current}/${movie.episode_total} tập` : movie.time}
                   </span>
                 </div>
-                
-                <div className="mb-2 md:mb-3">
-                  <h1 className="movie-title text-xl md:text-2xl lg:text-3xl font-bold">{movie.name}</h1>
-                  {movie.origin_name && movie.origin_name !== movie.name && (
-                    <p className="text-xs md:text-sm text-gray-300 mt-0.5">{movie.origin_name}</p>
-                  )}
+                <div className="flex items-center">
+                  <span className="text-blue-500 mr-2">Ngôn ngữ:</span>
+                  <span className="text-white capitalize">{movie.lang}</span>
                 </div>
-                
-                <div className="flex flex-wrap gap-1.5 md:gap-2 my-2 md:my-3">
-                  <span className="bg-blue-600 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full text-xs font-medium">{movie.quality}</span>
-                  {movie.category.map((cat, index) => (
-                    <span key={index} className="category-pill text-xs">{cat.name}</span>
-                  )).slice(0, 3)}
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2 md:mb-3 text-xs">
+                <div className="flex items-center">
+                  <span className="text-blue-500 mr-2">Đánh giá:</span>
                   <div className="flex items-center">
-                    <span className="mr-1 md:mr-2 text-blue-400">Năm:</span>
-                    <span className="font-medium">{movie.year}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-1 md:mr-2 text-blue-400">Thời lượng:</span>
-                    <span className="font-medium">{movie.time}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-1 md:mr-2 text-blue-400">Đánh giá:</span>
-                    <span className="flex items-center font-medium">
-                      <svg className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                      </svg>
-                      <span className="mr-2">{ratingDisplay.toFixed(1)}</span>
-                      <div className="w-12 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-yellow-400"
-                          style={{ width: `${(ratingDisplay/10)*100}%` }}
-                        ></div>
-                      </div>
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="flex gap-2 md:gap-3 mt-3 md:mt-4">
-                  <Link 
-                    href={`/watch/${movie.slug}`} 
-                    className="watch-button px-3 py-1.5 md:px-4 md:py-2 text-white rounded-md font-medium flex items-center text-xs md:text-base"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                     </svg>
-                    Xem Phim
-                  </Link>
-                  <Link 
-                    href={`/movie/${movie.slug}`} 
-                    className="details-button px-3 py-1.5 md:px-4 md:py-2 text-white rounded-md font-medium text-xs md:text-base"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <svg className="w-3 h-3 md:w-4 md:h-4 mr-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Chi tiết
-                  </Link>
+                    <span className="text-white">{ratingDisplay.toFixed(1)}</span>
+                  </div>
                 </div>
+              </div>
+
+              {/* Description - Hide on mobile */}
+              {movie.content && (
+                <p className="hidden md:block text-sm md:text-base text-gray-400 mb-5 md:mb-8 line-clamp-3">
+                  {movie.content}
+                </p>
+              )}
+              
+              {/* Action buttons */}
+              <div className="flex gap-3 md:gap-4">
+                <Link 
+                  href={`/watch/${movie.slug}`} 
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 md:px-6 md:py-2.5 rounded text-white font-medium flex items-center text-xs md:text-sm transition-colors duration-300"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Xem Phim
+                </Link>
+                <Link 
+                  href={`/movie/${movie.slug}`} 
+                  className="bg-[#ffffff14] hover:bg-[#ffffff1f] px-4 py-2 md:px-6 md:py-2.5 rounded text-white font-medium flex items-center text-xs md:text-sm transition-colors duration-300"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Chi tiết
+                </Link>
               </div>
             </div>
           </div>
@@ -141,27 +163,31 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
 
         {/* Thumbnail navigation */}
         {allMovies.length > 0 && onThumbnailClick && (
-          <div className="thumbnail-nav">
+          <div className="absolute bottom-4 md:bottom-6 left-0 right-0 z-30">
             <div className="container mx-auto px-4">
-              <div className="flex justify-center gap-1 md:gap-3">
+              <div className="flex justify-center gap-2 md:gap-3">
                 {allMovies.slice(0, 5).map((thumbnailMovie, idx) => (
                   <button 
                     key={thumbnailMovie._id || idx}
-                    className={`thumbnail-button ${currentIndex === idx ? 'active' : ''}`}
+                    className={`group relative overflow-hidden rounded ${
+                      currentIndex === idx 
+                        ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-[#0d1117]' 
+                        : 'opacity-50 hover:opacity-75'
+                    } transition-all duration-300`}
                     onClick={(e) => {
                       e.stopPropagation();
                       onThumbnailClick(idx);
                     }}
                   >
-                    <div className="relative w-14 h-18 md:w-20 md:h-24 overflow-hidden rounded-lg">
+                    <div className="relative w-14 h-20 md:w-20 md:h-28">
                       <Image
                         src={getImageUrl(thumbnailMovie.poster_url || thumbnailMovie.thumb_url)}
                         alt={thumbnailMovie.name}
                         fill
-                        sizes="(max-width: 768px) 64px, 96px"
+                        sizes="(max-width: 768px) 56px, 80px"
                         className="object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                     </div>
                   </button>
                 ))}

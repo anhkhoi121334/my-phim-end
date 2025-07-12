@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import useSearchStore from '@/store/searchStore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { debounce } from 'lodash';
@@ -34,45 +34,43 @@ export default function useSearch() {
     } catch (error) {
       console.error('Error initializing search history:', error);
     }
-  }, []);
+  }, [initializeHistory]);
   
   // Initialize search from URL query param
   useEffect(() => {
     try {
       const urlQuery = searchParams?.get('q');
-      
       if (urlQuery) {
         setSearchInput(urlQuery);
         setQuery(urlQuery);
         search(1);
       } else if (query) {
-        // If no URL query but we have a store query, initialize input
         setSearchInput(query);
       }
     } catch (error) {
       console.error('Error initializing from URL:', error);
     }
-  }, [searchParams]);
+  }, [searchParams, query, setQuery, search]);
+  
+  // Define the search function
+  const searchFn = useCallback((value: string) => {
+    try {
+      if (value?.trim()) {
+        router.push(`/search?q=${encodeURIComponent(value.trim())}`);
+      } else {
+        router.push('/search');
+      }
+      setQuery(value || '');
+      search(1);
+    } catch (error) {
+      console.error('Error in search:', error);
+    }
+  }, [router, setQuery, search]);
   
   // Create debounced search function
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      try {
-        // Update URL if query is not empty
-        if (value?.trim()) {
-          router.push(`/search?q=${encodeURIComponent(value.trim())}`);
-        } else {
-          router.push('/search');
-        }
-        
-        // Update store query and perform search
-        setQuery(value || '');
-        search(1);
-      } catch (error) {
-        console.error('Error in debounced search:', error);
-      }
-    }, 500),
-    [router, setQuery, search]
+  const debouncedSearch = useMemo(
+    () => debounce(searchFn, 500),
+    [searchFn]
   );
   
   // Handle input change

@@ -6,16 +6,15 @@ import Image from 'next/image';
 import MovieCard from '@/components/MovieCard';
 import { useAnime } from '@/hooks/useAnime';
 import HeroBanner from '@/components/HeroBanner';
+import Loading from '@/components/Loading';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [latestMovies, setLatestMovies] = useState<Movie[]>([]);
-  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
   const [tvSeries, setTvSeries] = useState<Movie[]>([]);
   const [koreanMovies, setKoreanMovies] = useState<Movie[]>([]);
   const [chineseMovies, setChineseMovies] = useState<Movie[]>([]);
   const [theaterMovies, setTheaterMovies] = useState<Movie[]>([]);
-  const [animeMovies, setAnimeMovies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
@@ -43,17 +42,17 @@ export default function Home() {
   }, [selectedFeatureIndex, isSliding]);
 
   // Auto-slide effect
-useEffect(() => {
-  // Only set up the interval if we have movies to display
-  if (uniqueLatestMovies.length === 0) return;
-  
-  const autoSlideTimer = setInterval(() => {
-    const nextIndex = (selectedFeatureIndex + 1) % uniqueLatestMovies.length;
-    changeSlide(nextIndex);
-  }, 10000);
+  useEffect(() => {
+    // Only set up the interval if we have movies to display
+    if (uniqueLatestMovies.length === 0) return;
+    
+    const autoSlideTimer = setInterval(() => {
+      const nextIndex = (selectedFeatureIndex + 1) % uniqueLatestMovies.length;
+      changeSlide(nextIndex);
+    }, 10000);
 
-  return () => clearInterval(autoSlideTimer);
-}, [selectedFeatureIndex, changeSlide, uniqueLatestMovies.length]);
+    return () => clearInterval(autoSlideTimer);
+  }, [selectedFeatureIndex, changeSlide, uniqueLatestMovies.length]);
 
   // Lấy tất cả phim mới
   const { data: animeData } = useAnime(50);
@@ -61,19 +60,13 @@ useEffect(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
         setError(null);
+        setIsLoading(true);
 
         // Lấy tất cả phim mới
         const latestMoviesResponse = await movieApi.getLatestMovies(1, 50);
         if (latestMoviesResponse?.items) {
           setLatestMovies(latestMoviesResponse.items.slice(0, 12));
-        }
-
-        // Lấy phim xu hướng
-        const trendingResponse = await movieApi.getTrendingMovies();
-        if (trendingResponse?.items) {
-          setTrendingMovies(trendingResponse.items.slice(0, 12));
         }
 
         // Lấy phim bộ mới
@@ -100,10 +93,10 @@ useEffect(() => {
           setTheaterMovies(theaterResponse.items.slice(0, 8));
         }
 
-        setIsLoading(false);
       } catch (err) {
         console.error('Lỗi khi tải dữ liệu phim:', err);
         setError('Đã xảy ra lỗi khi tải dữ liệu phim. Vui lòng thử lại sau.');
+      } finally {
         setIsLoading(false);
       }
     };
@@ -119,17 +112,7 @@ useEffect(() => {
   };
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto p-4 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em]" role="status">
-            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-              Loading...
-            </span>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loading fullscreen showLogo size="lg" />;
   }
 
   if (error) {

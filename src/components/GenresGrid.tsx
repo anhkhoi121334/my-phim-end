@@ -108,12 +108,10 @@ const getGenreGradient = (genreName: string): string => {
 
 const GenresGrid = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadGenres = async () => {
-      setLoading(true);
       try {
         const genreData = await fetchGenres();
         setGenres(genreData);
@@ -121,8 +119,6 @@ const GenresGrid = () => {
       } catch (err) {
         console.error('Failed to load genres:', err);
         setError('Không thể tải danh sách thể loại. Vui lòng thử lại sau.');
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -130,7 +126,7 @@ const GenresGrid = () => {
   }, []);
 
   return (
-    <div className="bg-[#0a0e1a] py-12 page-transition">
+    <div className="py-12 page-transition">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 flex items-center">
           <span className="inline-block w-1.5 h-8 bg-blue-500 rounded-full mr-3"></span>
@@ -141,12 +137,7 @@ const GenresGrid = () => {
           Khám phá bộ sưu tập phim đa dạng của chúng tôi theo nhiều thể loại khác nhau. Từ phim hành động gay cấn đến những bộ phim tình cảm lãng mạn, bạn chắc chắn sẽ tìm thấy thể loại phim yêu thích.
         </p>
         
-        {loading ? (
-          <div className="flex flex-col justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-            <p className="mt-4 text-gray-300">Đang tải danh sách thể loại...</p>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="text-center py-12 bg-red-900/20 backdrop-blur-sm rounded-xl border border-red-900/50">
             <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />

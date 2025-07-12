@@ -1,21 +1,60 @@
-import React from 'react';
-import Image from 'next/image';
+import { FC } from "react";
+import Image from "next/image";
 
-const Loading = () => {
+interface LoadingProps {
+  size?: "sm" | "md" | "lg";
+  color?: "red" | "white" | "gray";
+  fullscreen?: boolean;
+  className?: string;
+  showLogo?: boolean;
+}
+
+const Loading: FC<LoadingProps> = ({ 
+  size = "md", 
+  color = "red",
+  fullscreen = false,
+  className = "",
+  showLogo = false
+}) => {
+  const sizeClasses = {
+    sm: "w-2 h-2",
+    md: "w-3 h-3",
+    lg: "w-4 h-4"
+  };
+
+  const colorClasses = {
+    red: "bg-red-500",
+    white: "bg-white",
+    gray: "bg-gray-400"
+  };
+
+  const containerClasses = fullscreen 
+    ? "fixed inset-0 flex flex-col items-center justify-center bg-black/90 z-50" 
+    : "flex flex-col items-center justify-center";
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      <div className="relative w-16 h-16 mb-4">
-        <Image 
-          src="/myphim-icon.svg"
-          alt="MyPhim Logo"
-          fill
-          className="animate-pulse"
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="w-3 h-3 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-        <div className="w-3 h-3 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-        <div className="w-3 h-3 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+    <div className={`${containerClasses} ${className}`}>
+      {showLogo && (
+        <div className="relative w-48 h-48 mb-8">
+          <Image
+            src="/myphim-logo.svg"
+            alt="MyPhim Logo"
+            fill
+            className="object-contain animate-pulse"
+          />
+        </div>
+      )}
+      
+      <div className="relative">
+        {/* Pulse ring effect */}
+        <div className={`absolute inset-0 ${colorClasses[color]} opacity-20 rounded-full animate-ping`}></div>
+        
+        {/* Bouncing dots */}
+        <div className="flex gap-2 relative z-10">
+          <div className={`rounded-full ${sizeClasses[size]} ${colorClasses[color]} animate-bounce [animation-delay:-0.3s]`}></div>
+          <div className={`rounded-full ${sizeClasses[size]} ${colorClasses[color]} animate-bounce [animation-delay:-0.15s]`}></div>
+          <div className={`rounded-full ${sizeClasses[size]} ${colorClasses[color]} animate-bounce`}></div>
+        </div>
       </div>
     </div>
   );

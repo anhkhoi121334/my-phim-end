@@ -26,15 +26,15 @@ interface SearchState {
 }
 
 // Helper for localStorage (safe for SSR)
-const getLocalStorage = (key: string, defaultValue: any = []) => {
+const getLocalStorage = <T>(key: string, defaultValue: T): T => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(key);
-    return saved !== null ? JSON.parse(saved) : defaultValue;
+    return saved !== null ? JSON.parse(saved) as T : defaultValue;
   }
   return defaultValue;
 };
 
-const setLocalStorage = (key: string, value: any) => {
+const setLocalStorage = <T>(key: string, value: T): void => {
   if (typeof window !== 'undefined') {
     localStorage.setItem(key, JSON.stringify(value));
   }
@@ -53,12 +53,12 @@ const useSearchStore = create<SearchState>((set, get) => ({
   
   // Initialize search history from localStorage
   initializeHistory: () => {
-    const history = getLocalStorage('searchHistory', []);
+    const history = getLocalStorage<string[]>('searchHistory', []);
     set({ searchHistory: history || [] });
   },
   
   // Set search query
-  setQuery: (query) => set({ query }),
+  setQuery: (query: string) => set({ query }),
   
   // Search movies
   search: async (page = 1) => {
@@ -85,7 +85,7 @@ const useSearchStore = create<SearchState>((set, get) => ({
         const history = get().searchHistory || [];
         if (Array.isArray(history) && !history.includes(query)) {
           const newHistory = [query, ...history].slice(0, 10); // Keep last 10 searches
-          setLocalStorage('searchHistory', newHistory);
+          setLocalStorage<string[]>('searchHistory', newHistory);
           set({ searchHistory: newHistory });
         }
       }
@@ -97,7 +97,7 @@ const useSearchStore = create<SearchState>((set, get) => ({
         currentPage: response?.data?.currentPage || 1,
         totalPages: response?.data?.totalPages || 1
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Search error:', error);
       set({ 
         isLoading: false, 
@@ -116,15 +116,15 @@ const useSearchStore = create<SearchState>((set, get) => ({
   
   // Clear search history
   clearHistory: () => {
-    setLocalStorage('searchHistory', []);
+    setLocalStorage<string[]>('searchHistory', []);
     set({ searchHistory: [] });
   },
   
   // Remove item from search history
-  removeFromHistory: (query) => {
+  removeFromHistory: (query: string) => {
     const history = get().searchHistory || [];
     const newHistory = Array.isArray(history) ? history.filter(item => item !== query) : [];
-    setLocalStorage('searchHistory', newHistory);
+    setLocalStorage<string[]>('searchHistory', newHistory);
     set({ searchHistory: newHistory });
   }
 }));

@@ -5,12 +5,11 @@ import GenresGrid from '@/components/GenresGrid';
 
 export default function GenresPage() {
   useEffect(() => {
-    // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="">
+    <div className="bg-[#0a0e1a] min-h-screen">
       <GenresGrid />
     </div>
   );

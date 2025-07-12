@@ -185,6 +185,19 @@ export default function RecommendedMoviesPage() {
             </span>
           </div>
         </div>
+      ) : error ? (
+        <div className="text-center py-12">
+          <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p className="text-xl text-gray-400">{error}</p>
+          <button
+            onClick={() => setCurrentPage(1)}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Thử lại
+          </button>
+        </div>
       ) : (
         <div className="text-center py-12">
           <svg className="w-16 h-16 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

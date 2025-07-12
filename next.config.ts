@@ -3,7 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ['img.phimapi.com', 'phimimg.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.phimapi.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'phimimg.com',
+      },
+    ],
   },
 };
 
