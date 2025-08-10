@@ -13,45 +13,77 @@ interface HeroBannerProps {
 }
 
 const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, onThumbnailClick }: HeroBannerProps) => {
+  const [currentIndexLocal, setCurrentIndexLocal] = useState(currentIndex);
+  const [isSlidingLocal, setIsSlidingLocal] = useState(isSliding);
+
   const getImageUrl = (url: string) => {
     if (!url) return '/placeholder.jpg';
     if (url.startsWith('http')) return url;
     return `https://img.phimapi.com/${url}`;
   };
 
-  // Create animated rating display
-  const [ratingDisplay, setRatingDisplay] = useState(0);
-  
+  // Sync with parent component state
   useEffect(() => {
-    // Reset to 0 when movie changes or during slide
-    setRatingDisplay(0);
+    setCurrentIndexLocal(currentIndex);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    setIsSlidingLocal(isSliding);
+  }, [isSliding]);
+
+  // Auto slide functionality
+  useEffect(() => {
+    if (!allMovies || allMovies.length <= 1) return;
+
+    const interval = setInterval(() => {
+      const nextIndex = (currentIndexLocal + 1) % allMovies.length;
+      onThumbnailClick(nextIndex);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentIndexLocal, allMovies, onThumbnailClick]);
+
+  // Handle slide transition
+  useEffect(() => {
+    if (!allMovies || allMovies.length <= 1) return;
     
-    if (!isSliding) {
-      const rating = movie.tmdb?.vote_average || movie.rating?.vote_average || 0;
-      let current = 0;
-      const interval = setInterval(() => {
-        current += 0.1;
-        setRatingDisplay(Math.min(current, rating));
-        if (current >= rating) clearInterval(interval);
-      }, 30);
-      return () => clearInterval(interval);
-    }
-  }, [movie, isSliding]);
+    setIsSlidingLocal(true);
+    const timer = setTimeout(() => {
+      setIsSlidingLocal(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [currentIndexLocal, allMovies]);
+
+  const handleThumbnailClick = (index: number) => {
+    if (!allMovies) return;
+    onThumbnailClick(index);
+  };
+
+  // Early return if no movie
+  if (!movie) {
+    return (
+      <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-[#0d1117] flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-400">Đang tải banner...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] xl:h-[700px] overflow-hidden">
-      <section 
-        className="relative w-full h-full cursor-pointer" 
-        onClick={onBannerClick}
-      >
+      <section className="relative w-full h-full">
         {/* Fixed dark background */}
         <div className="absolute inset-0 bg-[#0d1117] z-0"></div>
         
         {/* Background image with gradient overlay */}
-        <div className={`absolute inset-0 z-1 ${isSliding ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700 ease-out`}>
+        <div className={`absolute inset-0 z-1 ${isSlidingLocal ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700 ease-out`}>
           <div className="relative w-full h-full">
             <Image
-              src={getImageUrl(movie.thumb_url)}
+              src={getImageUrl(movie.thumb_url || movie.poster_url || '')}
               alt={movie.name}
               fill
               sizes="100vw"
@@ -64,7 +96,7 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
         </div>
 
         {/* Content */}
-        <div className={`absolute inset-0 z-20 ${isSliding ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'} transition-all duration-700 ease-out`}>
+        <div className={`absolute inset-0 z-20 ${isSlidingLocal ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'} transition-all duration-700 ease-out`}>
           <div className="container mx-auto px-4 h-full flex items-end md:items-center pb-30 md:pb-0">
             <div className="w-full max-w-3xl">
               {/* Latest movies label */}
@@ -87,9 +119,9 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
               {/* Categories */}
               <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
                 <span className="bg-blue-600 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded text-[10px] md:text-sm text-white font-medium">
-                  {movie.quality}
+                  {movie.quality || 'HD'}
                 </span>
-                {movie.category.slice(0, 3).map((cat, index) => (
+                {(movie.category || []).slice(0, 3).map((cat, index) => (
                   <span 
                     key={index} 
                     className="bg-white/5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded text-[10px] md:text-sm text-white font-medium"
@@ -121,7 +153,9 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
                     <svg className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                     </svg>
-                    <span className="text-white">{ratingDisplay.toFixed(1)}</span>
+                    <span className="text-white">
+                      {movie.tmdb?.vote_average || movie.rating?.vote_average || 'N/A'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -138,7 +172,6 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
                 <Link 
                   href={`/watch/${movie.slug}`} 
                   className="bg-blue-600 hover:bg-blue-700 px-4 py-2 md:px-6 md:py-2.5 rounded text-white font-medium flex items-center text-xs md:text-sm transition-colors duration-300"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
@@ -149,7 +182,6 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
                 <Link 
                   href={`/movie/${movie.slug}`} 
                   className="bg-[#ffffff14] hover:bg-[#ffffff1f] px-4 py-2 md:px-6 md:py-2.5 rounded text-white font-medium flex items-center text-xs md:text-sm transition-colors duration-300"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -161,8 +193,30 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
           </div>
         </div>
 
+        {/* Navigation arrows */}
+        {allMovies.length > 1 && (
+          <>
+            <button 
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300"
+              onClick={() => onThumbnailClick((currentIndexLocal - 1 + allMovies.length) % allMovies.length)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button 
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300"
+              onClick={() => onThumbnailClick((currentIndexLocal + 1) % allMovies.length)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </>
+        )}
+
         {/* Thumbnail navigation */}
-        {allMovies.length > 0 && onThumbnailClick && (
+        {allMovies.length > 1 && (
           <div className="absolute bottom-4 md:bottom-6 left-0 right-0 z-30">
             <div className="container mx-auto px-4">
               <div className="flex justify-center gap-2 md:gap-3">
@@ -170,18 +224,15 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
                   <button 
                     key={thumbnailMovie._id || idx}
                     className={`group relative overflow-hidden rounded ${
-                      currentIndex === idx 
+                      currentIndexLocal === idx 
                         ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-[#0d1117]' 
                         : 'opacity-50 hover:opacity-75'
                     } transition-all duration-300`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onThumbnailClick(idx);
-                    }}
+                    onClick={() => handleThumbnailClick(idx)}
                   >
                     <div className="relative w-14 h-20 md:w-20 md:h-28">
                       <Image
-                        src={getImageUrl(thumbnailMovie.poster_url || thumbnailMovie.thumb_url)}
+                        src={getImageUrl(thumbnailMovie.poster_url || thumbnailMovie.thumb_url || '')}
                         alt={thumbnailMovie.name}
                         fill
                         sizes="(max-width: 768px) 56px, 80px"
@@ -195,6 +246,9 @@ const HeroBanner = ({ movie, isSliding, onBannerClick, allMovies, currentIndex, 
             </div>
           </div>
         )}
+
+        {/* Slide indicators */}
+    
       </section>
     </div>
   );

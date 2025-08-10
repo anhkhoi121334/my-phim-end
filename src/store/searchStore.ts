@@ -97,11 +97,11 @@ const useSearchStore = create<SearchState>((set, get) => ({
         currentPage: response?.data?.currentPage || 1,
         totalPages: response?.data?.totalPages || 1
       });
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Search error:', error);
       set({ 
         isLoading: false, 
-        error: 'Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại sau.' 
+        error: error instanceof Error ? error.message : 'Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại sau.' 
       });
     }
   },

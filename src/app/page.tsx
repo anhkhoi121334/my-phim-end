@@ -108,7 +108,12 @@ export default function Home() {
   const getImageUrl = (url: string) => {
     if (!url) return '/placeholder.jpg';
     if (url.startsWith('http')) return url;
-    return `https://img.phimapi.com/${url}`;
+    
+    // Debug logging
+    // console.log('Processing image URL:', url);
+    const processedUrl = `https://img.phimapi.com/${url}`;
+    // console.log('Processed URL:', processedUrl);
+    return processedUrl;
   };
 
   if (isLoading) {
@@ -154,7 +159,7 @@ export default function Home() {
           onBannerClick={handleBannerClick}
           allMovies={uniqueLatestMovies}
           currentIndex={selectedFeatureIndex}
-          onThumbnailClick={(index) => {
+          onThumbnailClick={(index: number) => {
             if (index !== selectedFeatureIndex) {
               changeSlide(index);
             }
@@ -163,7 +168,7 @@ export default function Home() {
       )}
 
       {/* Phần nội dung chính */}
-      <div className="movie-content-page container mx-auto px-4 py-8 bg-gray-50">
+      <div className="movie-content-page container mx-auto px-4 py-8">
         {/* Phim mới cập nhật */}
         <section className="mb-12">
           <div className="flex justify-between items-center mb-6">
@@ -289,7 +294,7 @@ export default function Home() {
             <div className="absolute inset-0">
               {animeData.popular[0]?.poster_url && (
                 <Image
-                  src={animeData.popular[0].poster_url}
+                  src={getImageUrl(animeData.popular[0].poster_url)}
                   alt="Background"
                   fill
                   className="object-cover opacity-30"
@@ -318,7 +323,8 @@ export default function Home() {
                     <Link href={`/movie/${animeData.popular[0].slug}`} className="block">
                       <div className="relative aspect-video rounded-lg overflow-hidden group">
                         <Image
-                          src={animeData.popular[0].thumb_url}
+                          src={getImageUrl(animeData.popular[0].thumb_url || animeData.popular[0].poster_url || '')}
+                          
                           alt={animeData.popular[0].name}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -339,12 +345,12 @@ export default function Home() {
                     </Link>
                   </div>
                   <div className="space-y-4">
-                    {animeData.popular.slice(1, 4).map((movie) => (
+                    {animeData.popular.slice(1, 4).map((movie: Movie) => (
                       <Link key={movie._id} href={`/movie/${movie.slug}`} className="block group">
                         <div className="flex gap-4">
                           <div className="relative w-24 h-32 flex-shrink-0 rounded-lg overflow-hidden">
                             <Image
-                              src={movie.thumb_url}
+                              src={getImageUrl(movie.thumb_url || movie.poster_url || '')}
                               alt={movie.name}
                               fill
                               className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -370,7 +376,7 @@ export default function Home() {
               )}
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {animeData.popular.slice(4, 16).map(movie => (
+                {animeData.popular.slice(4, 16).map((movie: Movie) => (
                   <MovieCard key={movie._id} movie={movie} />
                 ))}
               </div>
@@ -394,7 +400,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {animeData.latest.slice(0, 12).map(movie => (
+              {animeData.latest.slice(0, 12).map((movie: Movie) => (
                 <MovieCard key={movie._id} movie={movie} />
               ))}
             </div>

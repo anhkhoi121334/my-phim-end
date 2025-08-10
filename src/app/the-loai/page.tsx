@@ -9,7 +9,7 @@ export default function GenresPage() {
   }, []);
 
   return (
-    <div className="bg-[#0a0e1a] min-h-screen">
+    <div className="bg-white min-h-screen">
       <GenresGrid />
     </div>
   );

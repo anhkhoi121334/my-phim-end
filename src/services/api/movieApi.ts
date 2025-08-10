@@ -15,26 +15,30 @@ export interface Movie {
   name: string;
   origin_name: string;
   slug: string;
-  year: number;
-  thumb_url: string;
   poster_url: string;
-  quality: string;
-  lang: string;
-  time: string;
-  type?: string;
-  category: {
-    id?: string;
-    name: string;
-    slug: string;
-  }[];
-  country: {
-    id?: string;
-    name: string;
-    slug: string;
-  }[];
-  episode_current: string;
-  episode_total: string;
+  thumb_url?: string;
+  quality?: string;
+  trailer_url?: string;
+  time?: string;
+  episode_current?: string;
+  episode_total?: string;
   content?: string;
+  type?: string;
+  status?: boolean;
+  slug_category?: string[];
+  year?: number;
+  category?: {
+    name: string;
+    slug: string;
+  }[];
+  country?: {
+    name: string;
+    slug: string;
+  }[];
+  director?: string[];
+  actor?: string[];
+  lang?: string;
+  view?: number;
   tmdb?: {
     type: string;
     id: string;
@@ -124,15 +128,24 @@ export interface MovieApiResponse {
   pagination?: Pagination;
 }
 
+// Thêm interface cho API response
+export interface ApiResponse<T> {
+  status: boolean;
+  error?: string;
+  message?: string;
+  data?: T;
+  [key: string]: any;
+}
+
 /**
  * Lấy danh sách thể loại phim
  * @returns Promise với danh sách thể loại
  */
 export const fetchGenres = async (): Promise<Genre[]> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/the-loai`);
-    if (response.data?.status && response.data?.items) {
-      return response.data.items;
+    const response = await axios.get<ApiResponse<{ items: Genre[] }>>(`${API_BASE_URL}/the-loai`);
+    if (response.data?.status && response.data?.data?.items) {
+      return response.data.data.items;
     }
     return getFallbackGenres();
   } catch (error) {
@@ -272,7 +285,8 @@ export const fetchMovieById = async (slug: string): Promise<Movie> => {
  */
 export const getMovieDetails = async (slug: string): Promise<MovieDetailResponse> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/phim/${slug}`);
+    // Use internal API route to avoid CORS issues
+    const response = await axios.get(`/api/movies/${slug}`);
     if (response.data?.status) {
       return response.data;
     }
@@ -492,35 +506,43 @@ const getFallbackTrendingMovies = async (page: number, limit: number) => {
  * @param slug Slug của phim
  * @returns Promise với danh sách tập phim
  */
-export const getMovieEpisodes = async (slug: string): Promise<{ status: boolean, episodes: Episode[] }> => {
+export const getMovieEpisodes = async (
+  slug: string
+): Promise<{ status: boolean; episodes: Episode[] }> => {
   try {
     const response = await getMovieDetails(slug);
-    if (response.status && response.episodes) {
-      // Ưu tiên server HLS (m3u8) nếu có
-      const hlsServer = response.episodes.find(server => 
-        server.server_name.toLowerCase().includes('hls') || 
-        server.server_data.some(episode => episode.link_m3u8)
+    if (response.status && Array.isArray(response.episodes)) {
+      // Ưu tiên server có nhiều tập nhất và có link m3u8 hoặc link_embed hợp lệ
+      let selectedServer: ServerData | undefined = response.episodes.find(
+        server =>
+          server.server_data.some(
+            ep => ep.link_m3u8 || ep.link_embed
+          )
       );
-        
-      // Nếu không có server HLS, sử dụng server đầu tiên
-      const selectedServer = hlsServer || response.episodes[0];
-      
-      if (selectedServer?.server_data) {
-        return {
-          status: true,
-          episodes: selectedServer.server_data
-        };
-      }
+
+      // Nếu không có server nào hợp lệ, fallback về server đầu tiên
+      if (!selectedServer) selectedServer = response.episodes[0];
+
+      // Lọc ra các tập có link xem hợp lệ
+      const validEpisodes =
+        selectedServer?.server_data.filter(
+          ep => ep.link_m3u8 || ep.link_embed
+        ) || [];
+
+      return {
+        status: validEpisodes.length > 0,
+        episodes: validEpisodes,
+      };
     }
     return {
       status: false,
-      episodes: []
+      episodes: [],
     };
   } catch (error) {
     console.error(`Error fetching episodes for movie ${slug}:`, error);
     return {
       status: false,
-      episodes: []
+      episodes: [],
     };
   }
 };
@@ -1191,8 +1213,8 @@ export const getYears = (): number[] => {
   return years;
 };
 
-// Tạo một biến cho API object trước khi export
-const movieApi = {
+// Tạo object chứa tất cả các hàm export
+export const movieApi = {
   fetchGenres,
   fetchMoviesByGenre,
   fetchMovieById,
@@ -1208,8 +1230,149 @@ const movieApi = {
   fetchTheaterMovies,
   getRecommendedMovies,
   fetchAnimationMovies,
-  getYears
+  getYears,
+  getRelatedMovies: async (movieId: string): Promise<ApiResponse<{ movies: Movie[] }>> => {
+    try {
+      // Use internal API route to avoid CORS issues
+      const response = await axios.get(`/api/movies/by-id/${movieId}/related`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching related movies:', error);
+      return {
+        status: false,
+        data: { movies: [] }
+      };
+    }
+  },
+  
+  // Legacy getRelatedMovies function (keeping for reference)
+  getRelatedMoviesLegacy: async (movieId: string): Promise<ApiResponse<{ movies: Movie[] }>> => {
+    try {
+      // Thử lấy thông tin chi tiết phim để biết thể loại
+      let movieDetails;
+      try {
+        movieDetails = await axios.get(`${API_BASE_URL}/v1/api/phim/${movieId}`);
+      } catch (detailError) {
+        console.error('Error fetching movie details for related movies:', detailError);
+        // Không ném lỗi ở đây, chuyển xuống phương án dự phòng
+        console.log('Switching to fallback method for related movies');
+      }
+      
+      // Nếu lấy được thông tin phim và có thể loại
+      if (movieDetails?.data?.movie?.category && Array.isArray(movieDetails.data.movie.category) && movieDetails.data.movie.category.length > 0) {
+        // Lấy thể loại đầu tiên của phim
+        const firstCategory = movieDetails.data.movie.category[0];
+        
+        if (firstCategory?.slug) {
+          try {
+            // Lấy phim cùng thể loại
+            const relatedResponse = await axios.get(`${API_BASE_URL}/v1/api/danh-sach/the-loai/${firstCategory.slug}?page=1&limit=6`);
+            
+            // Kiểm tra dữ liệu trả về có hợp lệ không
+            if (relatedResponse?.data?.items && Array.isArray(relatedResponse.data.items)) {
+              // Lọc ra những phim không phải là phim hiện tại
+              const filteredMovies = relatedResponse.data.items.filter(
+                (item: any) => item._id !== movieId
+              ) || [];
+              
+              if (filteredMovies.length > 0) {
+                return {
+                  status: true,
+                  data: { movies: filteredMovies.slice(0, 6) }
+                };
+              }
+            }
+          } catch (categoryError) {
+            console.error('Error fetching movies by category:', categoryError);
+            // Không ném lỗi, chuyển xuống phương án dự phòng
+            console.log('Cannot fetch by category, using fallback');
+          }
+        }
+      }
+      
+      // Phương án dự phòng: lấy phim mới nhất
+      console.log('Using latest movies as fallback for related movies');
+      const latestMovies = await getLatestMovies(1, 8);
+      
+      if (latestMovies?.items && Array.isArray(latestMovies.items)) {
+        const relatedMovies = latestMovies.items
+          .filter((movie: Movie) => movie._id !== movieId)
+          .slice(0, 6);
+        
+        return {
+          status: true,
+          data: { movies: relatedMovies }
+        };
+      }
+      
+      // Nếu tất cả các phương án đều thất bại, trả về mảng rỗng
+      return { 
+        status: true, // Đặt true để không hiển thị lỗi cho người dùng
+        data: { movies: [] }
+      };
+    } catch (error) {
+      console.error('Error in getRelatedMovies:', error);
+      
+      // Dữ liệu dự phòng khi có lỗi bất ngờ: trả về mảng rỗng
+      return { 
+        status: true, // Đặt true để không hiển thị lỗi cho người dùng
+        data: { movies: [] }
+      };
+    }
+  },
+
+  saveWatchHistory: async (movieId: string): Promise<ApiResponse<any>> => {
+    const response = await fetch('/api/movies/history', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ movieId })
+  });
+  return response.json();
+  },
 };
 
-// Export default
-export default movieApi; 
+export async function fetchMovies(page = 1, limit = 10) {
+  const res = await fetch(`https://api.dulieuphim.ink/phim-moi/v3?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Không thể lấy danh sách phim');
+  return res.json();
+}
+
+export async function fetchMovieImage(slug: string) {
+  const res = await fetch(`https://api.dulieuphim.ink/get-img/v3?slug=${slug}`);
+  if (!res.ok) throw new Error('Không thể lấy ảnh phim');
+  return res.json();
+}
+
+// Cache implementation
+const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+
+interface CacheItem {
+  data: any;
+  timestamp: number;
+}
+
+const cache = new Map<string, CacheItem>();
+
+export const fetchWithCache = async (url: string) => {
+  const cached = cache.get(url);
+  const now = Date.now();
+
+  if (cached && now - cached.timestamp < CACHE_TIME) {
+    return cached.data;
+  }
+
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  cache.set(url, {
+    data,
+    timestamp: now
+  });
+
+  return data;
+};
+
+// Export default object
+export default movieApi;

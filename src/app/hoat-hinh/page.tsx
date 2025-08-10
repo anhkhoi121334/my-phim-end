@@ -29,9 +29,11 @@ export default function AnimationMoviesPage() {
   };
   
   return (
-    <MovieListPage
-      title="Phim Hoạt Hình"
-      fetchMovies={fetchAnimationMoviesWrapper} // Pass the new wrapper function
-    />
+    <>
+      <MovieListPage
+        title="Phim Hoạt Hình"
+        fetchMovies={fetchAnimationMoviesWrapper} // Pass the new wrapper function
+      />
+    </>
   );
 }

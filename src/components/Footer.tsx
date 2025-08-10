@@ -20,11 +20,11 @@ const Footer = () => {
       { href: '/the-loai/tam-ly', label: 'Tâm Lý' },
     ],
     countries: [
-      { href: '/quoc-gia/phim-viet-nam', label: 'Việt Nam' },
-      { href: '/quoc-gia/phim-han-quoc', label: 'Hàn Quốc' },
-      { href: '/quoc-gia/phim-trung-quoc', label: 'Trung Quốc' },
-      { href: '/quoc-gia/phim-thai-lan', label: 'Thái Lan' },
-      { href: '/quoc-gia/phim-my', label: 'Mỹ' },
+      { href: '/quoc-gia/viet-nam', label: 'Việt Nam' },
+      { href: '/quoc-gia/han-quoc', label: 'Hàn Quốc' },
+      { href: '/quoc-gia/trung-quoc', label: 'Trung Quốc' },
+      { href: '/quoc-gia/thai-lan', label: 'Thái Lan' },
+      { href: '/quoc-gia/my', label: 'Mỹ' },
     ],
   };
 

@@ -89,7 +89,7 @@ export default function MovieListPage({
     };
 
     loadInitialData();
-  }, [currentPage, fetchMovies, pageSize, selectedCountry, selectedGenre, selectedYear, showFilters, sortBy]);
+  }, [currentPage, fetchMovies, pageSize, selectedCountry, selectedGenre, selectedYear, showFilters, sortBy, setError, setMovies, setTotalPages, setCountries, setGenres]);
 
   // Handle page change
   const handlePageChange = useCallback(async (page: number) => {

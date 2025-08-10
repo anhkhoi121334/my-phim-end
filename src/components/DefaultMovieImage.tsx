@@ -1,0 +1,39 @@
+
+
+interface DefaultMovieImageProps {
+  title?: string;
+  width?: number;
+  height?: number;
+  className?: string;
+}
+
+export default function DefaultMovieImage({ 
+  title = 'Movie', 
+  width = 500, 
+  height = 750,
+  className = ''
+}: DefaultMovieImageProps) {
+  return (
+    <div 
+      className={`relative bg-gray-200 flex items-center justify-center ${className}`}
+      style={{ width, height }}
+    >
+      <div className="text-gray-400 text-center p-4">
+        <svg 
+          className="mx-auto h-12 w-12 mb-2" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" 
+          />
+        </svg>
+        <p className="text-sm">{title}</p>
+      </div>
+    </div>
+  );
+} 

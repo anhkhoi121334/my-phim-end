@@ -19,6 +19,34 @@
   --card-hover: #1c2940;
 }
 
+/* Light theme */
+.light {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 240, 240, 240;
+  --foreground: #1f2937;
+  --bg-main: #ffffff;
+  --bg-secondary: #f8fafc;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --card-bg: #ffffff;
+  --card-hover: #f3f4f6;
+}
+
+/* Dark theme */
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 13, 18, 30;
+  --background-end-rgb: 9, 14, 26;
+  --foreground: #f8fafc;
+  --bg-main: #0a0e1a;
+  --bg-secondary: #131b2c;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --card-bg: #151f32;
+  --card-hover: #1c2940;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -41,10 +69,8 @@ body {
 /* Style cho Header */
 header {
   background-color: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(12px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-  height: 70px;
 }
 
 .btn-primary {
@@ -90,7 +116,7 @@ header {
 }
 
 .section-title {
-  @apply text-xl md:text-2xl font-bold text-gray-900;
+  @apply text-xl md:text-2xl font-bold text-white;
 }
 
 .section-title::before {
@@ -351,7 +377,7 @@ header {
 
 /* Custom styles */
 .section-title {
-  @apply text-xl md:text-2xl font-bold text-gray-900;
+  @apply text-xl md:text-2xl font-bold text-white;
 }
 
 /* Movie card styling */
@@ -490,3 +516,56 @@ main {
 }
 
 /* Movie title animation */
+
+/* Responsive video player */
+.always-show-controls .absolute.inset-0.flex.flex-col.justify-end {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.light-off::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 40;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .movie-card .play-button {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    height: 60vh;
+  }
+  
+  .thumbnail-nav {
+    display: none;
+  }
+}
+
+/* Improved video controls */
+.video-controls-button {
+  @apply text-white hover:text-white active:scale-90 transition-transform bg-blue-600/80 hover:bg-blue-700/90 rounded-full w-8 h-8 flex items-center justify-center;
+}
+
+.video-controls-icon {
+  @apply w-4 h-4;
+}

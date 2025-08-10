@@ -1,34 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
-import { movieApi } from '@/services';
-import { Movie } from '@/types';
+import { movieApi, Movie } from '@/services/api/movieApi';
 
-interface AnimeData {
+export interface AnimeData {
   latest: Movie[];
   popular: Movie[];
 }
-
-const filterAnimeMovies = (movies: Movie[]) => {
-  return movies.filter(movie => 
-    movie.category?.some(cat => 
-      cat.name.toLowerCase().includes('hoạt hình') || 
-      cat.name.toLowerCase().includes('anime')
-    )
-  );
-};
 
 export const useAnime = (limit: number = 50) => {
   return useQuery<AnimeData, Error>({
     queryKey: ['anime', limit],
     queryFn: async () => {
-      const response = await movieApi.getLatestMovies(1, limit);
+      // Sử dụng API fetchAnimationMovies trực tiếp thay vì lọc từ danh sách phim
+      const response = await movieApi.fetchAnimationMovies(1, limit);
       if (!response?.items) {
         throw new Error('Failed to fetch anime movies');
       }
 
-      const animeMovies = filterAnimeMovies(response.items);
-      
       // Sắp xếp theo rating cho phim phổ biến
-      const popularAnime = [...animeMovies]
+      const popularAnime = [...response.items]
         .sort((a, b) => {
           const ratingA = a.rating?.vote_average || 0;
           const ratingB = b.rating?.vote_average || 0;
@@ -36,7 +25,7 @@ export const useAnime = (limit: number = 50) => {
         });
 
       return {
-        latest: animeMovies.slice(0, Math.min(animeMovies.length, 24)),
+        latest: response.items.slice(0, Math.min(response.items.length, 24)),
         popular: popularAnime.slice(0, Math.min(popularAnime.length, 24))
       };
     },

@@ -128,12 +128,12 @@ const GenresGrid = () => {
   return (
     <div className="py-12 page-transition">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 flex items-center">
+      <h1 className="text-3xl md:text-4xl font-bold text-black mb-6 flex items-center">
           <span className="inline-block w-1.5 h-8 bg-blue-500 rounded-full mr-3"></span>
           Thể Loại Phim
         </h1>
         
-        <p className="text-gray-300 mb-8 max-w-2xl">
+        <p className="text-gray-500 mb-8 max-w-2xl">
           Khám phá bộ sưu tập phim đa dạng của chúng tôi theo nhiều thể loại khác nhau. Từ phim hành động gay cấn đến những bộ phim tình cảm lãng mạn, bạn chắc chắn sẽ tìm thấy thể loại phim yêu thích.
         </p>
         

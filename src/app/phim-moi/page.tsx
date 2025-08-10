@@ -1,8 +1,13 @@
 "use client";
 import MovieListPage from '@/components/MovieListPage';
+import { useAnime } from '@/hooks';
 import movieApi from '@/services/api/movieApi';
+import Loading from '@/components/Loading';
 
 export default function LatestMoviesPage() {
+  // Lấy dữ liệu anime
+  const { isLoading: isLoadingAnime } = useAnime(50);
+
   // Create a wrapper function to transform the API response
   const getLatestMoviesWrapper = async (
     page: number,
@@ -28,10 +33,20 @@ export default function LatestMoviesPage() {
     };
   };
 
+  if (isLoadingAnime) {
+    return <Loading fullscreen={false} showLogo={false} />;
+  }
+
   return (
-    <MovieListPage
-      title="Phim Mới"
-      fetchMovies={getLatestMoviesWrapper} // Use the new wrapper function
-    />
+    <div>
+      {/* Kho Tàng Anime */}
+  
+      
+      {/* Danh sách phim mới */}
+      <MovieListPage
+        title="Phim Mới"
+        fetchMovies={getLatestMoviesWrapper} // Use the new wrapper function
+      />
+    </div>
   );
 }
